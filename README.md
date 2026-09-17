@@ -18,6 +18,7 @@
 [![Custody](https://img.shields.io/badge/Custody-Alpaca%20Securities%20(FINRA%20%2F%20SIPC)-0052FF?style=for-the-badge)](https://spout.finance)
 [![Options VRP](https://img.shields.io/badge/Yield%20Engine-Variance%20Risk%20Premium-10B981?style=for-the-badge)](https://spout.finance)
 [![Borrow Rate](https://img.shields.io/badge/Borrow%20Rate-0.00%25%20Guaranteed-38BDF8?style=for-the-badge)](https://beta.spout.finance)
+[![Executive PDF](https://img.shields.io/badge/Executive%20PDF-17--Page%20Report-E11D48?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://sanjay3226.github.io/spout-finance-teardown/Spout-Finance-Beta-Teardown-Report.pdf)
 [![Audit Score](https://img.shields.io/badge/Overall%20Score-Grade%20A%2B%20(9.7%2F10)-F59E0B?style=for-the-badge)](#-protocol-scorecard--verdict)
 
 <br/><br/>
@@ -30,7 +31,7 @@
 
 | 🌐 Live Interactive Portal | 📄 Executive 17-Page PDF | 🧪 Testnet Beta Pass | 🔍 Public Repository |
 |:---:|:---:|:---:|:---:|
-| [**Open Web Teardown →**](https://sanjay3226.github.io/spout-finance-teardown/) | [**Download PDF Report**](Spout-Finance-Beta-Teardown-Report.pdf) | `Early Access Card #160` | [**GitHub Source**](https://github.com/sanjay3226/spout-finance-teardown) |
+| [**Open Web Teardown →**](https://sanjay3226.github.io/spout-finance-teardown/) | [**View Full PDF (Fast)**](https://sanjay3226.github.io/spout-finance-teardown/Spout-Finance-Beta-Teardown-Report.pdf) <br/><sub>[Direct Download](https://github.com/sanjay3226/spout-finance-teardown/raw/main/Spout-Finance-Beta-Teardown-Report.pdf)</sub> | `Early Access Card #160` | [**GitHub Source**](https://github.com/sanjay3226/spout-finance-teardown) |
 
 </div>
 

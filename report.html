@@ -50,7 +50,7 @@
     .nav-links a:hover{color:var(--t0);background:rgba(99,102,241,.1)}
     .nav-links a:hover::after{left:13px;right:13px}
     .nav-acts{display:flex;align-items:center;gap:6px;flex-shrink:0}
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;font-size:.76rem;font-weight:700;letter-spacing:.015em;cursor:pointer;border:1px solid var(--bd);background:rgba(255,255,255,.04);color:var(--t2);transition:all .22s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;font-family:inherit}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;font-size:.76rem;font-weight:700;letter-spacing:.015em;cursor:pointer;border:1px solid var(--bd);background:rgba(255,255,255,.04);color:var(--t2);transition:all .22s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;font-family:inherit;text-decoration:none}
     .btn:hover{border-color:var(--a);background:rgba(99,102,241,.12);color:var(--t0);transform:translateY(-1.5px);box-shadow:0 4px 16px var(--ga)}
     .btnp{background:linear-gradient(135deg,var(--a),var(--v));border-color:transparent;color:#fff;box-shadow:0 4px 16px var(--ga)}
     .btnp:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--gv);background:linear-gradient(135deg,#5254cc,var(--v))}
@@ -254,10 +254,10 @@
     <button class="btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme">
       <span id="tIcon">&#x2600;&#xFE0F;</span><span id="tLbl">Light</span>
     </button>
-    <button class="btn btnp" onclick="window.print()" aria-label="Save PDF">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-4 0h-8v4h8v-4z"/></svg>
-      Save PDF
-    </button>
+    <a class="btn btnp" href="Spout-Finance-Beta-Teardown-Report.pdf" target="_blank" download="Spout-Finance-Beta-Teardown-Report.pdf" aria-label="Download 17-Page PDF Report">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      Download PDF
+    </a>
   </div>
 </header>
 
