@@ -10,6 +10,12 @@
 [![Yield Mechanism](https://img.shields.io/badge/Yield-Variance%20Risk%20Premium%20(VRP)-10B981?style=for-the-badge)](https://spout.finance/docs)
 [![Bounty Pool](https://img.shields.io/badge/Superteam%20Earn-1%2C000%20USDC%20Pool-F59E0B?style=for-the-badge)](https://earn.superteam.fun)
 
+### 📑 Navigation & Quick Links
+* 🌐 **[Interactive Luxury Dark-Mode Research Portal (`report.html`)](report.html)** *(Standalone institutional view with interactive lightbox and print/PDF support)*
+* 🧵 **[Official 5-Part X (Twitter) Submission Thread (`SUBMISSION_THREAD.md`)](SUBMISSION_THREAD.md)** *(Viral public breakdown ready to copy-paste)*
+* 📋 **[Superteam Earn Form Cheat Sheet (`SUBMISSION_FORM_CHEAT_SHEET.md`)](SUBMISSION_FORM_CHEAT_SHEET.md)** *(Field-by-field copy/paste inputs for final submission)*
+* 🖼️ **[Master Visual Audit Gallery](#-appendix-master-visual-audit-gallery-1212-testnet-records)** *(Catalog of all 12 testnet stress-testing screenshots)*
+
 ---
 
 ## Executive Summary
@@ -31,6 +37,7 @@ This intelligence report delivers a rigorous, hedge-fund-grade technical and eco
 2. **Part II: Mathematical Mechanics of the 0% Borrow Engine** (The VRP options harvest, flat 50% LTV, per-asset delta tuning, 3-tier Loss Waterfall, and the In-The-Money Auto-Roll mechanics).
 3. **Part III: Beta Platform Teardown & UX Friction Audit** (Hands-on stress testing with Card #160, market hours vs. 24/7 crypto dissonance, wallet RPC edge cases, and Health Factor visibility).
 4. **Part IV: High-Leverage Product Roadmap Recommendations** (Synthetic Collars, Cross-Margin Collateral Baskets, and 1-Click Flash Deleveraging).
+5. **Appendix: Master Visual Audit Gallery** (Catalog of all 12 testnet stress-testing screenshots).
 
 ---
 
@@ -145,6 +152,12 @@ To absorb varying asset risk (e.g. low-beta gold ETF `GLD` vs. high-beta AI stoc
 By dynamically widening the strike distance for higher-volatility equities, Spout maintains equivalent tail-risk safety while paying zero-interest borrowing parity across all assets.
 
 <p align="center">
+  <img src="assets/04-tour-build-order.png" alt="Build an Order Tour" width="55%" style="border-radius: 10px; border: 1px solid #334155;" />
+  <br>
+  <em>Figure 2.1b: Order Construction Lifecycle — Seamless collateral locking and quote composition.</em>
+</p>
+
+<p align="center">
   <img src="assets/06-order-preview-nvda.png" alt="Order Preview NVDA" width="85%" style="border-radius: 10px; border: 1px solid #334155;" />
   <br>
   <em>Figure 2.2: Order Execution Terminal — Real-time cost modeling with verified Alpaca 100.2% reserve backing.</em>
@@ -181,6 +194,12 @@ If an extraordinary market event causes call options to expire deep in the money
   <img src="assets/10-tour-earn-tranches.png" alt="Earn Interest Tranches" width="65%" style="border-radius: 10px; border: 1px solid #334155;" />
   <br>
   <em>Figure 2.3: Lending Tranche Structure — Senior (steady priority yield) vs. Junior (elevated yield risk buffer).</em>
+</p>
+
+<p align="center">
+  <img src="assets/09-earn-coming-soon.png" alt="Earn Tab Status" width="85%" style="border-radius: 10px; border: 1px solid #334155;" />
+  <br>
+  <em>Figure 2.3b: Earn Protocol Gateway — Live testnet state showing structured yield vault deployment pipeline.</em>
 </p>
 
 ### 4. The In-The-Money (ITM) Assignment Paradox & Auto-Roll Engine
@@ -242,9 +261,15 @@ During our stress-testing of the core borrowing flow, we identified **4 critical
 * **Positive UX Highlight:** Spout includes a native AI documentation assistant ("Ask Spout") directly embedded into the trading view.
 
 <p align="center">
+  <img src="assets/11-tour-ask-spout.png" alt="Ask Spout Tour" width="65%" style="border-radius: 10px; border: 1px solid #334155;" />
+  <br>
+  <em>Figure 3.2a: In-App AI Knowledge Engine Tour — Contextual guidance integrated directly into execution flows.</em>
+</p>
+
+<p align="center">
   <img src="assets/12-ask-spout-modal.png" alt="Ask Spout Assistant" width="45%" style="border-radius: 10px; border: 1px solid #334155;" />
   <br>
-  <em>Figure 3.2: Native AI Knowledge Engine — In-app documentation retrieval for immediate user clarity.</em>
+  <em>Figure 3.2b: Interactive Ask Spout Modal — In-app documentation retrieval for immediate user clarity.</em>
 </p>
 
 * **Recommendation:** Expand Ask Spout to include **real-time position analysis** (e.g. *"What is my liquidation risk if NVDA drops 15%?"*), rather than purely static FAQ responses.
@@ -284,6 +309,27 @@ To evolve Spout Finance from an innovative niche protocol into the dominant inst
 | **OVERALL COMPOSITE** | **9.7 / 10** | **Grade A+ (Institutional Contender)** |
 
 Spout Finance represents the true frontier of Real-World Asset integration on Solana. By combining regulated institutional custody with on-chain Token-2022 enforcement and automated options yield, Spout proves that DeFi can out-compete traditional Wall Street margin lending on capital efficiency, transparency, and speed.
+
+---
+
+## 🖼️ Appendix: Master Visual Audit Gallery (12/12 Testnet Records)
+
+All assets captured live during testnet stress testing on `beta.spout.finance` via Early Access Card No. 160 (`Meow_GUY` / `CYB6QG67`):
+
+| # | Asset Filename | Category | Analytical Focus & Key Observation |
+|---|---|---|---|
+| **01** | [`01-spout-hero-landing.png`](assets/01-spout-hero-landing.png) | **Landing / Hero** | Primary value proposition: 0% interest borrowing without triggering equity sales. |
+| **02** | [`02-trade-tokenized-stocks.png`](assets/02-trade-tokenized-stocks.png) | **Trading Terminal** | Multi-asset console; identifies the critical "Market: Closed" TradFi hours indicator. |
+| **03** | [`03-tour-real-stocks-backing.png`](assets/03-tour-real-stocks-backing.png) | **Custodial Backing** | Verifiable 1:1 physical share backing at FINRA/SIPC-regulated broker Alpaca Securities. |
+| **04** | [`04-tour-build-order.png`](assets/04-tour-build-order.png) | **Order Flow** | Onboarding modal for locking tokenized collateral and configuring order quotes. |
+| **05** | [`05-tour-leverage-0-interest.png`](assets/05-tour-leverage-0-interest.png) | **0% Leverage Engine** | Architectural walkthrough of covered call options cash flow funding borrower liquidity. |
+| **06** | [`06-order-preview-nvda.png`](assets/06-order-preview-nvda.png) | **Order Preview** | NVDA order terminal verifying 100.2% Alpaca reserve backing and real-time fee breakdown. |
+| **07** | [`07-borrow-tab-empty.png`](assets/07-borrow-tab-empty.png) | **Borrow Dashboard** | Clean 50% LTV terminal showing maximum $5,000 borrow limit per $10,000 collateral. |
+| **08** | [`08-borrow-kyc-gated-error.png`](assets/08-borrow-kyc-gated-error.png) | **Live Edge Case** | Token-2022 Transfer Hook KYC gating error (`InvalidIdentity`) caught during live borrow execution. |
+| **09** | [`09-earn-coming-soon.png`](assets/09-earn-coming-soon.png) | **Lending Gateway** | Live testnet state of the structured yield vault gateway slated for mainnet rollout. |
+| **10** | [`10-tour-earn-tranches.png`](assets/10-tour-earn-tranches.png) | **Yield Mechanics** | Visual breakdown of Senior (protected 7% APY) and Junior (boosted 15–25% APY) tranches. |
+| **11** | [`11-tour-ask-spout.png`](assets/11-tour-ask-spout.png) | **AI Knowledge Agent** | Onboarding card for native AI copilot integrated into the trading dashboard. |
+| **12** | [`12-ask-spout-modal.png`](assets/12-ask-spout-modal.png) | **Interactive AI** | In-app query modal delivering instant clarity on margin health and protocol mechanics. |
 
 ---
 
