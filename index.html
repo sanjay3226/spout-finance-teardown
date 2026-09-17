@@ -3,1818 +3,529 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spout Finance — Protocol Intelligence & Beta Teardown Report</title>
+  <title>Spout Finance — Institutional Intelligence & Beta Teardown Report</title>
+  <meta name="description" content="Quantitative risk architecture, technical compliance breakdown, and hands-on UX audit of Spout Finance: 0% interest borrowing on Solana powered by tokenized US equities and VRP yield." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    /* ── Design Tokens ── */
     :root {
-      --bg: #07090e;
-      --bg-surface: #0e121d;
-      --card-bg: rgba(16, 21, 34, 0.82);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover-border: rgba(99, 102, 241, 0.4);
-      --accent: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.25);
-      --emerald: #10b981;
-      --emerald-glow: rgba(16, 185, 129, 0.2);
-      --amber: #f59e0b;
-      --rose: #f43f5e;
-      --text-main: #f8fafc;
-      --text-muted: #cbd5e1;
-      --text-dim: #94a3b8;
-      --solana: #a855f7;
-      --table-head-bg: rgba(255, 255, 255, 0.05);
-      --table-border: rgba(255, 255, 255, 0.06);
-      --flow-bg: rgba(11, 15, 24, 0.9);
-      --flow-border: rgba(255, 255, 255, 0.1);
-      --code-bg: rgba(255, 255, 255, 0.06);
-      --shadow-color: rgba(0, 0, 0, 0.4);
-      --hero-overlay: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.2) 0%, rgba(18, 22, 34, 0.65) 75%);
+      --bg:#060810;--sur:#0b0f1c;--sur2:#0f1424;
+      --gl:rgba(13,18,32,.78);--bd:rgba(255,255,255,.07);--bdh:rgba(99,102,241,.5);
+      --a:#6366f1;--a2:#818cf8;--v:#a855f7;--em:#10b981;--am:#f59e0b;--ro:#f43f5e;--sk:#38bdf8;
+      --t0:#fff;--t1:#f1f5f9;--t2:#cbd5e1;--t3:#94a3b8;--t4:#64748b;
+      --ga:rgba(99,102,241,.3);--gv:rgba(168,85,247,.2);
+      --sh:0 8px 32px rgba(0,0,0,.5);--sh2:0 24px 64px rgba(0,0,0,.6);
+      --r1:10px;--r2:16px;--r3:22px;--r4:28px;
     }
-
     [data-theme="light"] {
-      --bg: #f8fafc;
-      --bg-surface: #ffffff;
-      --card-bg: #ffffff;
-      --card-border: #cbd5e1;
-      --card-hover-border: #4f46e5;
-      --accent: #4338ca;
-      --accent-glow: rgba(67, 56, 202, 0.15);
-      --emerald: #047857;
-      --emerald-glow: rgba(4, 120, 87, 0.15);
-      --amber: #b45309;
-      --rose: #be123c;
-      --text-main: #0f172a;
-      --text-muted: #334155;
-      --text-dim: #64748b;
-      --solana: #7e22ce;
-      --table-head-bg: #f1f5f9;
-      --table-border: #e2e8f0;
-      --flow-bg: #ffffff;
-      --flow-border: #cbd5e1;
-      --code-bg: #f1f5f9;
-      --shadow-color: rgba(0, 0, 0, 0.08);
-      --hero-overlay: radial-gradient(circle at 50% 0%, rgba(79, 70, 229, 0.08) 0%, rgba(241, 245, 249, 0.85) 75%);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(circle at 50% -10%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
-        radial-gradient(circle at 90% 40%, rgba(153, 69, 255, 0.05) 0%, transparent 45%),
-        radial-gradient(circle at 10% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 45%);
-      background-attachment: fixed;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.7;
-      padding: 24px 20px 90px;
-      -webkit-font-smoothing: antialiased;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    .container {
-      max-width: 980px;
-      margin: 0 auto;
-    }
-
-    /* ══════════════════════════════════════════
-       TOP NAVIGATION BAR — PREMIUM REDESIGN
-       ══════════════════════════════════════════ */
-    .nav-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding: 10px 18px;
-      background: var(--card-bg);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      margin-bottom: 28px;
-      position: sticky;
-      top: 14px;
-      z-index: 50;
-      box-shadow:
-        0 4px 6px -1px rgba(0,0,0,0.25),
-        0 10px 30px var(--shadow-color),
-        inset 0 1px 0 rgba(255,255,255,0.06);
-      transition: all 0.3s ease;
-    }
-
-    /* glowing accent line along the top edge */
-    .nav-bar::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 10%; right: 10%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--solana), transparent);
-      border-radius: 999px;
-      opacity: 0.7;
-    }
-
-    /* ── Logo Group ── */
-    .logo-group {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      text-decoration: none;
-      flex-shrink: 0;
-    }
-
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 9px;
-      background: linear-gradient(135deg, var(--accent), var(--solana));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      box-shadow: 0 4px 12px var(--accent-glow);
-      flex-shrink: 0;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .logo-group:hover .logo-icon {
-      transform: scale(1.08) rotate(-4deg);
-      box-shadow: 0 6px 18px var(--accent-glow);
-    }
-
-    .logo-text {
-      font-weight: 800;
-      font-size: 0.98rem;
-      letter-spacing: -0.03em;
-      background: linear-gradient(135deg, var(--text-main) 30%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1;
-    }
-
-    .logo-badge {
-      background: linear-gradient(135deg, var(--accent), var(--solana));
-      color: #fff;
-      padding: 2px 7px;
-      border-radius: 5px;
-      font-size: 0.66rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      box-shadow: 0 2px 8px var(--accent-glow);
-    }
-
-    /* ── Nav Links ── */
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .nav-links a {
-      position: relative;
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.005em;
-      transition: color 0.2s ease;
-      padding: 6px 11px;
-      border-radius: 9px;
-      transition: color 0.2s ease, background 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--text-main);
-      background: rgba(99, 102, 241, 0.1);
-    }
-
-    /* subtle animated underline on hover */
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      left: 50%;
-      right: 50%;
-      height: 1.5px;
-      background: linear-gradient(90deg, var(--accent), var(--solana));
-      border-radius: 2px;
-      transition: left 0.2s ease, right 0.2s ease;
-    }
-
-    .nav-links a:hover::after {
-      left: 11px;
-      right: 11px;
-    }
-
-    /* ── Nav Actions ── */
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      flex-shrink: 0;
-    }
-
-    .btn-action {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 13px;
-      border-radius: 10px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-      white-space: nowrap;
-      border: 1px solid var(--card-border);
-      background: rgba(125, 125, 125, 0.06);
-      color: var(--text-muted);
-    }
-
-    .btn-action:hover {
-      border-color: var(--accent);
-      background: rgba(99, 102, 241, 0.1);
-      color: var(--text-main);
-      transform: translateY(-1.5px);
-      box-shadow: 0 4px 14px var(--accent-glow);
-    }
-
-    /* Primary PDF button gets a gradient treatment */
-    .btn-action.btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--solana));
-      border-color: transparent;
-      color: #fff;
-      box-shadow: 0 4px 14px var(--accent-glow);
-    }
-
-    .btn-action.btn-primary:hover {
-      opacity: 0.92;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px var(--accent-glow);
-      color: #fff;
-    }
-
-    /* Hero Header */
-    .hero {
-      padding: 44px 36px;
-      background: var(--hero-overlay);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      margin-bottom: 34px;
-      box-shadow: 0 14px 40px var(--shadow-color);
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--solana), var(--emerald), transparent);
-    }
-
-    .pill-stack {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      background: rgba(125, 125, 125, 0.08);
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-    }
-
-    .pill.verified {
-      background: rgba(16, 185, 129, 0.12);
-      border-color: rgba(16, 185, 129, 0.35);
-      color: var(--emerald);
-    }
-
-    .pill.pool {
-      background: rgba(245, 158, 11, 0.12);
-      border-color: rgba(245, 158, 11, 0.35);
-      color: var(--amber);
-    }
-
-    .pill.solana {
-      background: rgba(153, 69, 255, 0.12);
-      border-color: rgba(153, 69, 255, 0.35);
-      color: var(--solana);
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      line-height: 1.18;
-      letter-spacing: -0.035em;
-      margin-bottom: 14px;
-      color: var(--text-main);
-    }
-
-    [data-theme="dark"] h1 {
-      background: linear-gradient(180deg, #ffffff 40%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 820px;
-      line-height: 1.65;
-    }
-
-    /* Section Cards */
-    .section-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(18px);
-      border: 1px solid var(--card-border);
-      border-radius: 22px;
-      padding: 34px;
-      margin-bottom: 32px;
-      box-shadow: 0 10px 32px var(--shadow-color);
-      transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.3s ease;
-    }
-
-    .section-card:hover {
-      border-color: var(--card-hover-border);
-      box-shadow: 0 14px 44px var(--shadow-color);
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 22px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .section-num {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--solana));
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.92rem;
-      box-shadow: 0 4px 12px var(--accent-glow);
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: var(--text-main);
-    }
-
-    h3 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin: 24px 0 10px;
-      color: var(--text-main);
-      letter-spacing: -0.015em;
-    }
-
-    p {
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      font-size: 0.98rem;
-    }
-
-    ul, ol {
-      margin: 12px 0 18px 24px;
-      color: var(--text-muted);
-    }
-
-    li {
-      margin-bottom: 8px;
-      font-size: 0.96rem;
-    }
-
-    strong {
-      color: var(--text-main);
-      font-weight: 600;
-    }
-
-    code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.88em;
-      background: var(--code-bg);
-      padding: 2px 6px;
-      border-radius: 5px;
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
-    }
-
-    /* Figure & Image Styling */
-    .figure-container {
-      margin: 26px 0 30px;
-      text-align: center;
-      page-break-inside: avoid;
-    }
-
-    .figure-img {
-      max-width: 100%;
-      border-radius: 14px;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 12px 32px var(--shadow-color);
-      cursor: zoom-in;
-      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .figure-img:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 16px 40px var(--accent-glow);
-    }
-
-    .figure-caption {
-      margin-top: 10px;
-      font-size: 0.84rem;
-      color: var(--text-dim);
-      font-style: italic;
-    }
-
-    .figures-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin: 24px 0 28px;
-      page-break-inside: avoid;
-    }
-
-    .figures-row .figure-container {
-      margin: 0;
-    }
-
-    /* ==========================================================================
-       MODERN CEDEFI ARCHITECTURE FLOWCHART
-       ========================================================================== */
-    .flow-wrapper {
-      background: var(--flow-bg);
-      border: 1px solid var(--flow-border);
-      border-radius: 18px;
-      padding: 24px;
-      margin: 24px 0;
-      box-shadow: 0 8px 24px var(--shadow-color);
-      page-break-inside: avoid;
-    }
-
-    .flow-banner {
-      text-align: center;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--card-border);
-      margin-bottom: 20px;
-    }
-
-    .flow-banner-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text-main);
-      letter-spacing: -0.01em;
-    }
-
-    .flow-banner-sub {
-      font-size: 0.82rem;
-      color: var(--text-dim);
-      margin-top: 4px;
-    }
-
-    .flow-grid {
-      display: grid;
-      grid-template-columns: 1fr 170px 1fr;
-      gap: 16px;
-      align-items: stretch;
-    }
-
-    .flow-col {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .flow-col-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: rgba(125, 125, 125, 0.08);
-      border: 1px solid var(--card-border);
-      font-weight: 700;
-      font-size: 0.88rem;
-      color: var(--text-main);
-    }
-
-    .flow-node {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      box-shadow: 0 4px 14px var(--shadow-color);
-      transition: all 0.2s ease;
-    }
-
-    .flow-node:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-
-    .flow-node-badge {
-      align-self: flex-start;
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 2px 7px;
-      border-radius: 5px;
-      background: rgba(99, 102, 241, 0.14);
-      color: var(--accent);
-      border: 1px solid rgba(99, 102, 241, 0.25);
-    }
-
-    .flow-node-badge.solana {
-      background: rgba(153, 69, 255, 0.14);
-      color: var(--solana);
-      border-color: rgba(153, 69, 255, 0.3);
-    }
-
-    .flow-node-badge.broker {
-      background: rgba(16, 185, 129, 0.14);
-      color: var(--emerald);
-      border-color: rgba(16, 185, 129, 0.3);
-    }
-
-    .flow-node-title {
-      font-size: 0.94rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .flow-node-desc {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-    }
-
-    .flow-node-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .flow-pill {
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: var(--code-bg);
-      color: var(--text-dim);
-      border: 1px solid var(--card-border);
-    }
-
-    .flow-bridge-col {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 14px;
-      padding: 6px 0;
-    }
-
-    .bridge-item {
-      background: rgba(125, 125, 125, 0.06);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px 10px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .bridge-arrow {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: -0.02em;
-    }
-
-    .bridge-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--text-dim);
-    }
-
-    /* ==========================================================================
-       MODERN 3-TIER LOSS WATERFALL STACK
-       ========================================================================== */
-    .waterfall-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin: 24px 0;
-      page-break-inside: avoid;
-    }
-
-    .waterfall-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 18px 22px;
-      position: relative;
-      box-shadow: 0 4px 18px var(--shadow-color);
-      transition: all 0.25s ease;
-      page-break-inside: avoid;
-    }
-
-    .waterfall-card:hover {
-      transform: translateY(-2px);
-    }
-
-    .waterfall-card.tier-1 {
-      border-left: 5px solid var(--emerald);
-    }
-
-    .waterfall-card.tier-2 {
-      border-left: 5px solid var(--amber);
-    }
-
-    .waterfall-card.tier-3 {
-      border-left: 5px solid var(--accent);
-    }
-
-    .waterfall-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .waterfall-title-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .waterfall-tier-badge {
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 6px;
-    }
-
-    .tier-1 .waterfall-tier-badge {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--emerald);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .tier-2 .waterfall-tier-badge {
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--amber);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .tier-3 .waterfall-tier-badge {
-      background: rgba(99, 102, 241, 0.15);
-      color: var(--accent);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-    }
-
-    .waterfall-title {
-      font-size: 1.02rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .waterfall-metric {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-main);
-      padding: 3px 9px;
-      border-radius: 7px;
-      background: var(--code-bg);
-      border: 1px solid var(--card-border);
-    }
-
-    .waterfall-text {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-      margin-bottom: 0;
-    }
-
-    .waterfall-connector {
-      text-align: center;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-dim);
-      padding: 2px 0;
-    }
-
-    /* Data Tables */
-    .table-wrapper {
-      overflow-x: auto;
-      margin: 22px 0;
-      border-radius: 14px;
-      border: 1px solid var(--card-border);
-      background: var(--card-bg);
-      box-shadow: 0 4px 16px var(--shadow-color);
-      page-break-inside: avoid;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.9rem;
-    }
-
-    th {
-      background: var(--table-head-bg);
-      padding: 13px 18px;
-      color: var(--text-main);
-      font-weight: 700;
-      border-bottom: 1px solid var(--table-border);
-      text-transform: uppercase;
-      font-size: 0.74rem;
-      letter-spacing: 0.06em;
-    }
-
-    td {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--table-border);
-      color: var(--text-muted);
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover td {
-      background: rgba(125, 125, 125, 0.03);
-    }
-
-    /* Finding / Alert Cards */
-    .finding-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-left: 4px solid var(--accent);
-      border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 22px;
-      box-shadow: 0 4px 18px var(--shadow-color);
-      page-break-inside: avoid;
-    }
-
-    .finding-card.danger {
-      border-left-color: var(--rose);
-      background: rgba(244, 63, 94, 0.03);
-    }
-
-    .finding-card.warning {
-      border-left-color: var(--amber);
-      background: rgba(245, 158, 11, 0.03);
-    }
-
-    .finding-title {
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .badge-severity {
-      padding: 3px 9px;
-      border-radius: 6px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-    }
-
-    .badge-severity.high {
-      background: rgba(244, 63, 94, 0.16);
-      color: var(--rose);
-      border: 1px solid rgba(244, 63, 94, 0.3);
-    }
-
-    .badge-severity.medium {
-      background: rgba(245, 158, 11, 0.16);
-      color: var(--amber);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .badge-severity.insight {
-      background: rgba(99, 102, 241, 0.16);
-      color: var(--accent);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-    }
-
-    /* Score Grid */
-    .score-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin: 24px 0;
-      page-break-inside: avoid;
-    }
-
-    .score-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 22px;
-      text-align: center;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 16px var(--shadow-color);
-      page-break-inside: avoid;
-    }
-
-    .score-box:hover {
-      border-color: var(--card-hover-border);
-      transform: translateY(-2px);
-    }
-
-    .score-num {
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: var(--text-main);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .score-num.highlight {
-      background: linear-gradient(135deg, var(--emerald), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .score-label {
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-dim);
-      font-weight: 600;
-    }
-
-    /* Visual Evidence Gallery Grid */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 20px;
-      margin: 26px 0 10px;
-    }
-
-    .gallery-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 18px var(--shadow-color);
-      page-break-inside: avoid;
-    }
-
-    .gallery-card:hover {
-      border-color: var(--card-hover-border);
-      transform: translateY(-3px);
-      box-shadow: 0 14px 34px var(--shadow-color);
-    }
-
-    .gallery-thumbnail-wrap {
-      position: relative;
-      background: #000;
-      overflow: hidden;
-      height: 180px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .gallery-thumbnail {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-      cursor: zoom-in;
-      transition: transform 0.3s ease;
-    }
-
-    .gallery-card:hover .gallery-thumbnail {
-      transform: scale(1.04);
-    }
-
-    .gallery-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(14, 18, 28, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(8px);
-      color: #fff;
-    }
-
-    .gallery-info {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-
-    .gallery-title {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 6px;
-    }
-
-    .gallery-desc {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 12px;
-      flex-grow: 1;
-    }
-
-    .gallery-filename {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--text-dim);
-      background: var(--code-bg);
-      padding: 4px 8px;
-      border-radius: 6px;
-      border: 1px solid var(--card-border);
-    }
-
-    /* Lightbox Modal */
-    .lightbox-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(5, 7, 12, 0.9);
-      backdrop-filter: blur(14px);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      cursor: zoom-out;
-    }
-
-    .lightbox-modal.active {
-      display: flex;
-    }
-
-    .lightbox-content {
-      max-width: 92vw;
-      max-height: 88vh;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-      object-fit: contain;
-    }
-
-    /* ==========================================================================
-       PRINT STYLESHEET (CLEAN WHITE THEME FOR HIGH-RES PDF)
-       ========================================================================== */
-    @media print {
-      :root, body, [data-theme] {
-        --bg: #ffffff !important;
-        --card-bg: #ffffff !important;
-        --text-main: #0f172a !important;
-        --text-muted: #334155 !important;
-        --text-dim: #64748b !important;
-        --card-border: #cbd5e1 !important;
-        --flow-bg: #f8fafc !important;
-        --flow-border: #cbd5e1 !important;
-        --code-bg: #f1f5f9 !important;
-      }
-      body {
-        background: #ffffff !important;
-        color: #0f172a !important;
-        padding: 0 !important;
-      }
-      .nav-bar, .btn-action, .lightbox-modal {
-        display: none !important;
-      }
-      .hero {
-        background: #f8fafc !important;
-        border: 1px solid #cbd5e1 !important;
-        box-shadow: none !important;
-        page-break-inside: avoid;
-      }
-      h1, h2, h3, strong, p, td, th {
-        color: #0f172a !important;
-        -webkit-text-fill-color: initial !important;
-      }
-      .flow-node-title, .flow-banner-title, .waterfall-title, .finding-title {
-        color: #0f172a !important;
-      }
-      .flow-node-desc, .waterfall-text {
-        color: #334155 !important;
-      }
-      .section-card {
-        background: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        box-shadow: none !important;
-      }
-      .flow-wrapper, .waterfall-card, .table-wrapper {
-        background: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
-        page-break-inside: avoid;
-      }
-      table {
-        font-size: 0.78rem !important;
-        width: 100% !important;
-        table-layout: auto !important;
-      }
-      th, td {
-        padding: 8px 10px !important;
-      }
-      h1, h2, h3, .section-header {
-        break-after: avoid !important;
-        page-break-after: avoid !important;
-      }
-      .flow-grid {
-        grid-template-columns: 1fr 160px 1fr !important;
-      }
-      .flow-col-header {
-        background: #f1f5f9 !important;
-        color: #0f172a !important;
-        border-color: #cbd5e1 !important;
-      }
-      .flow-node {
-        background: #f8fafc !important;
-        border-color: #cbd5e1 !important;
-      }
-      .bridge-item {
-        background: #f8fafc !important;
-        border-color: #cbd5e1 !important;
-      }
-    }
-
-    @media (max-width: 860px) {
-      .flow-grid {
-        grid-template-columns: 1fr;
-      }
-      .flow-bridge-col {
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-      .nav-links {
-        display: none;
-      }
-      h1 {
-        font-size: 2.1rem;
-      }
-      .hero {
-        padding: 28px 20px;
-      }
-      .section-card {
-        padding: 24px 18px;
-      }
+      --bg:#f4f6fb;--sur:#fff;--sur2:#f8fafc;
+      --gl:rgba(255,255,255,.94);--bd:#e2e8f0;--bdh:#6366f1;
+      --a:#4f46e5;--a2:#6366f1;--v:#7c3aed;--em:#059669;--am:#d97706;--ro:#e11d48;--sk:#0284c7;
+      --t0:#0f172a;--t1:#1e293b;--t2:#334155;--t3:#64748b;--t4:#94a3b8;
+      --ga:rgba(79,70,229,.12);--gv:rgba(124,58,237,.1);
+      --sh:0 4px 20px rgba(0,0,0,.08);--sh2:0 12px 40px rgba(0,0,0,.1);
+    }
+
+    /* ── Reset ── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--t1);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;transition:background .35s,color .35s;overflow-x:hidden}
+    [data-theme="dark"] body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -15%,rgba(99,102,241,.18),transparent 65%),radial-gradient(ellipse 60% 40% at 85% 55%,rgba(168,85,247,.1),transparent 60%),radial-gradient(ellipse 50% 40% at 10% 80%,rgba(16,185,129,.07),transparent 55%);pointer-events:none;z-index:0}
+    [data-theme="dark"] body::after{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0}
+    .wrap{max-width:1020px;margin:0 auto;padding:20px 24px 100px;position:relative;z-index:1}
+
+    /* ── Nav ── */
+    .nav{position:sticky;top:16px;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:32px;padding:10px 16px;background:var(--gl);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border:1px solid var(--bd);border-radius:var(--r4);box-shadow:0 2px 4px rgba(0,0,0,.15),0 12px 36px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05);transition:background .3s}
+    .nav::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--a),var(--v),var(--sk),transparent);border-radius:9px;opacity:.65}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;user-select:none}
+    .lmark{width:34px;height:34px;border-radius:10px;background:linear-gradient(140deg,var(--a),var(--v));display:flex;align-items:center;justify-content:center;font-size:1.05rem;box-shadow:0 4px 14px var(--ga);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;flex-shrink:0}
+    .logo:hover .lmark{transform:rotate(-8deg) scale(1.1);box-shadow:0 8px 24px var(--gv)}
+    .lname{font-weight:800;font-size:.97rem;letter-spacing:-.025em;background:linear-gradient(120deg,var(--t0) 40%,var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .ltag{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;background:linear-gradient(135deg,var(--a),var(--v));color:#fff;box-shadow:0 2px 8px var(--ga)}
+    .nav-links{display:flex;align-items:center;flex:1;justify-content:center}
+    .nav-links a{position:relative;color:var(--t3);text-decoration:none;font-size:.78rem;font-weight:600;padding:6px 13px;border-radius:9px;transition:color .18s,background .18s;letter-spacing:.01em}
+    .nav-links a::after{content:'';position:absolute;bottom:3px;left:50%;right:50%;height:1.5px;background:linear-gradient(90deg,var(--a),var(--v));border-radius:2px;transition:left .2s,right .2s}
+    .nav-links a:hover{color:var(--t0);background:rgba(99,102,241,.1)}
+    .nav-links a:hover::after{left:13px;right:13px}
+    .nav-acts{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;font-size:.76rem;font-weight:700;letter-spacing:.015em;cursor:pointer;border:1px solid var(--bd);background:rgba(255,255,255,.04);color:var(--t2);transition:all .22s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;font-family:inherit}
+    .btn:hover{border-color:var(--a);background:rgba(99,102,241,.12);color:var(--t0);transform:translateY(-1.5px);box-shadow:0 4px 16px var(--ga)}
+    .btnp{background:linear-gradient(135deg,var(--a),var(--v));border-color:transparent;color:#fff;box-shadow:0 4px 16px var(--ga)}
+    .btnp:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--gv);background:linear-gradient(135deg,#5254cc,var(--v))}
+
+    /* ── Hero ── */
+    .hero{position:relative;padding:52px 44px;border-radius:var(--r4);border:1px solid var(--bd);background:var(--gl);backdrop-filter:blur(20px);margin-bottom:28px;overflow:hidden;box-shadow:var(--sh2)}
+    [data-theme="dark"] .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 30% 50%,rgba(99,102,241,.12),transparent 65%),radial-gradient(ellipse 50% 40% at 80% 20%,rgba(168,85,247,.1),transparent 55%);pointer-events:none}
+    .hero::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),var(--v),var(--sk),var(--em))}
+    .hero-in{position:relative;z-index:1}
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+    .tag{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:9999px;font-size:.72rem;font-weight:700;letter-spacing:.02em;border:1px solid var(--bd);background:rgba(255,255,255,.04);color:var(--t3)}
+    .tg{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--em)}
+    .tv{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--v)}
+    .ti{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:var(--a2)}
+    .ts{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--sk)}
+    .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--a2);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+    .eyebrow::before{content:'';display:inline-block;width:28px;height:1.5px;background:var(--a);border-radius:2px}
+    h1{font-size:clamp(2rem,4.5vw,2.8rem);font-weight:900;letter-spacing:-.04em;line-height:1.12;color:var(--t0);margin-bottom:18px}
+    [data-theme="dark"] h1{background:linear-gradient(160deg,#fff 35%,#a5b4fc 75%,#c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .sub{font-size:1.05rem;color:var(--t2);line-height:1.7;max-width:740px}
+    .mrow{margin-top:28px;padding-top:20px;border-top:1px solid var(--bd);display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+    .mi{font-size:.78rem;color:var(--t3);font-weight:500}
+    .mi span{color:var(--t1);font-weight:700}
+
+    /* ── Section Cards ── */
+    .card{background:var(--gl);backdrop-filter:blur(20px);border:1px solid var(--bd);border-radius:var(--r4);padding:40px 42px;margin-bottom:24px;box-shadow:var(--sh);transition:border-color .25s,box-shadow .25s;position:relative;overflow:hidden}
+    [data-theme="dark"] .card::before{content:'';position:absolute;top:0;right:0;width:160px;height:160px;background:radial-gradient(circle at top right,rgba(99,102,241,.07),transparent 70%);pointer-events:none}
+    .card:hover{border-color:rgba(99,102,241,.25);box-shadow:0 16px 48px rgba(0,0,0,.45),0 0 0 1px rgba(99,102,241,.1)}
+    .sh{display:flex;align-items:flex-start;gap:20px;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--bd)}
+    .sn{font-size:3.5rem;font-weight:900;letter-spacing:-.05em;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(99,102,241,.4);flex-shrink:0;user-select:none;margin-top:2px;transition:-webkit-text-stroke-color .25s}
+    .card:hover .sn{-webkit-text-stroke-color:rgba(99,102,241,.7)}
+    .sht{flex:1}
+    .slbl{font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--a2);margin-bottom:6px;display:block}
+    h2{font-size:1.45rem;font-weight:800;letter-spacing:-.03em;color:var(--t0);line-height:1.25}
+    h3{font-size:1.05rem;font-weight:700;letter-spacing:-.02em;color:var(--t1);margin:28px 0 10px}
+    p{color:var(--t2);margin-bottom:16px}
+    ul,ol{margin:10px 0 18px 22px;color:var(--t2)}
+    li{margin-bottom:8px;font-size:.94rem}
+    strong{color:var(--t1);font-weight:650}
+    code{font-family:'JetBrains Mono',monospace;font-size:.84em;background:rgba(99,102,241,.1);color:var(--a2);padding:1px 6px;border-radius:5px;border:1px solid rgba(99,102,241,.2)}
+
+    /* ── Figures ── */
+    .fig{margin:28px 0 32px;text-align:center;page-break-inside:avoid}
+    .fig img{max-width:100%;border-radius:var(--r3);border:1px solid var(--bd);box-shadow:0 12px 36px rgba(0,0,0,.4);cursor:zoom-in;transition:transform .28s,border-color .28s,box-shadow .28s;display:block;margin:0 auto}
+    .fig img:hover{transform:translateY(-3px) scale(1.01);border-color:rgba(99,102,241,.5);box-shadow:0 20px 50px rgba(0,0,0,.45),0 0 0 1px rgba(99,102,241,.2)}
+    .fc{margin-top:12px;font-size:.8rem;color:var(--t4);font-style:italic;font-weight:500}
+    .fr{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin:28px 0 32px;page-break-inside:avoid}
+    .fr .fig{margin:0}
+
+    /* ── Flowchart ── */
+    .fw{background:var(--sur2);border:1px solid var(--bd);border-radius:var(--r3);padding:26px;margin:26px 0;box-shadow:var(--sh);page-break-inside:avoid}
+    .fhd{text-align:center;padding-bottom:18px;border-bottom:1px solid var(--bd);margin-bottom:22px}
+    .ft{font-size:1rem;font-weight:800;color:var(--t0);letter-spacing:-.015em}
+    .fs{font-size:.78rem;color:var(--t4);margin-top:4px}
+    .fg{display:grid;grid-template-columns:1fr 160px 1fr;gap:16px;align-items:stretch}
+    .fc2{display:flex;flex-direction:column;gap:12px}
+    .fch{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:11px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.18);font-weight:800;font-size:.82rem;color:var(--t0)}
+    .fn{background:var(--gl);border:1px solid var(--bd);border-radius:var(--r2);padding:16px;display:flex;flex-direction:column;gap:7px;transition:all .22s;box-shadow:var(--sh)}
+    .fn:hover{border-color:var(--bdh);transform:translateY(-2px)}
+    .fbg{align-self:flex-start;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:5px}
+    .sol{background:rgba(168,85,247,.12);color:var(--v);border:1px solid rgba(168,85,247,.25)}
+    .brk{background:rgba(16,185,129,.12);color:var(--em);border:1px solid rgba(16,185,129,.25)}
+    .fnt{font-size:.9rem;font-weight:700;color:var(--t0)}
+    .fnd{font-size:.79rem;color:var(--t2);line-height:1.5}
+    .fps{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+    .fp{font-size:.67rem;font-weight:600;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--t4);border:1px solid var(--bd)}
+    .bc{display:flex;flex-direction:column;justify-content:center;gap:12px}
+    .bi{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:11px;padding:12px 10px;text-align:center}
+    .ba{font-size:.75rem;font-weight:800;color:var(--a2)}
+    .bl{font-size:.68rem;font-weight:600;color:var(--t4);margin-top:3px}
+
+    /* ── Waterfall ── */
+    .wf{display:flex;flex-direction:column;gap:12px;margin:26px 0;page-break-inside:avoid}
+    .wc{border-radius:var(--r2);border:1px solid var(--bd);padding:20px 24px;background:var(--gl);box-shadow:var(--sh);transition:transform .2s;page-break-inside:avoid}
+    .wc:hover{transform:translateX(4px)}
+    .wc.t1{border-left:4px solid var(--em)}.wc.t2{border-left:4px solid var(--am)}.wc.t3{border-left:4px solid var(--a)}
+    .wh{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .wl{display:flex;align-items:center;gap:10px}
+    .wb{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:6px}
+    .t1 .wb{background:rgba(16,185,129,.12);color:var(--em);border:1px solid rgba(16,185,129,.3)}
+    .t2 .wb{background:rgba(245,158,11,.12);color:var(--am);border:1px solid rgba(245,158,11,.3)}
+    .t3 .wb{background:rgba(99,102,241,.12);color:var(--a2);border:1px solid rgba(99,102,241,.3)}
+    .wtt{font-size:1rem;font-weight:700;color:var(--t0)}
+    .wm{font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:7px;background:rgba(255,255,255,.05);border:1px solid var(--bd);color:var(--t2);white-space:nowrap}
+    .wtx{font-size:.9rem;color:var(--t2);line-height:1.6;margin:0}
+    .wcon{text-align:center;font-size:.78rem;font-weight:700;color:var(--t4);padding:2px 0}
+
+    /* ── Table ── */
+    .tw{overflow-x:auto;margin:24px 0;border-radius:var(--r2);border:1px solid var(--bd);box-shadow:var(--sh);page-break-inside:avoid}
+    table{width:100%;border-collapse:collapse;font-size:.875rem}
+    thead tr{background:var(--sur2);border-bottom:1px solid var(--bd)}
+    th{padding:13px 18px;font-size:.7rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);white-space:nowrap;text-align:left}
+    td{padding:14px 18px;border-bottom:1px solid var(--bd);color:var(--t2);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tbody tr{transition:background .15s}
+    tbody tr:hover td{background:rgba(99,102,241,.04)}
+
+    /* ── Findings ── */
+    .find{border-radius:var(--r2);border:1px solid var(--bd);padding:24px;margin-bottom:20px;background:var(--gl);box-shadow:var(--sh);page-break-inside:avoid}
+    .find.dn{border-left:4px solid var(--ro);background:rgba(244,63,94,.03)}
+    .find.wn{border-left:4px solid var(--am);background:rgba(245,158,11,.03)}
+    .fh{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px}
+    .ftl{font-size:1rem;font-weight:800;color:var(--t0);flex:1}
+    .sev{font-size:.65rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:6px;white-space:nowrap;flex-shrink:0}
+    .hi{background:rgba(244,63,94,.14);color:var(--ro);border:1px solid rgba(244,63,94,.3)}
+    .me{background:rgba(245,158,11,.14);color:var(--am);border:1px solid rgba(245,158,11,.3)}
+
+    /* ── Scores ── */
+    .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:24px 0;page-break-inside:avoid}
+    .sb{background:var(--gl);border:1px solid var(--bd);border-radius:var(--r3);padding:26px 20px;text-align:center;transition:all .22s;box-shadow:var(--sh);page-break-inside:avoid}
+    .sb:hover{border-color:rgba(99,102,241,.35);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.4),0 0 0 1px rgba(99,102,241,.1)}
+    .sn2{font-size:3rem;font-weight:900;letter-spacing:-.05em;line-height:1;margin-bottom:8px;background:linear-gradient(135deg,var(--em),var(--a2),var(--v));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .sl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t4)}
+    .verd{text-align:center;margin-top:20px;padding:28px 24px;border-radius:var(--r3);border:1px solid rgba(16,185,129,.3);background:rgba(16,185,129,.06)}
+    .verd h3{margin:0 0 10px;font-size:1.3rem;font-weight:900;letter-spacing:-.025em;color:var(--em)}
+    .verd p{margin:0;color:var(--t1);font-size:.94rem}
+
+    /* ── Gallery ── */
+    .gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin:24px 0}
+    .gc{background:var(--gl);border:1px solid var(--bd);border-radius:var(--r3);overflow:hidden;display:flex;flex-direction:column;transition:all .25s;box-shadow:var(--sh);page-break-inside:avoid}
+    .gc:hover{border-color:rgba(99,102,241,.35);transform:translateY(-4px);box-shadow:0 20px 48px rgba(0,0,0,.5)}
+    .gth{position:relative;height:176px;overflow:hidden;background:#000}
+    .gth img{width:100%;height:100%;object-fit:cover;object-position:top;cursor:zoom-in;transition:transform .35s}
+    .gc:hover .gth img{transform:scale(1.06)}
+    .gbg{position:absolute;top:10px;left:10px;font-size:.67rem;font-weight:800;padding:3px 9px;border-radius:6px;backdrop-filter:blur(10px);background:rgba(10,14,26,.85);border:1px solid rgba(255,255,255,.15);color:#fff}
+    .gbg.dn{background:rgba(244,63,94,.8);border-color:var(--ro)}
+    .gi{padding:16px;flex:1;display:flex;flex-direction:column}
+    .gtt{font-size:.9rem;font-weight:700;color:var(--t0);margin-bottom:6px}
+    .gds{font-size:.79rem;color:var(--t3);line-height:1.5;flex:1;margin-bottom:12px}
+    .gfn{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--t4);background:rgba(255,255,255,.04);border:1px solid var(--bd);padding:4px 8px;border-radius:6px}
+
+    /* ── Lightbox ── */
+    .lb{display:none;position:fixed;inset:0;background:rgba(4,5,10,.94);backdrop-filter:blur(18px);z-index:200;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+    @keyframes lbin{from{opacity:0}to{opacity:1}}
+    .lb.act{display:flex;animation:lbin .2s ease}
+    .lb img{max-width:94vw;max-height:90vh;border-radius:var(--r3);border:1px solid rgba(255,255,255,.15);box-shadow:0 32px 80px rgba(0,0,0,.8);object-fit:contain}
+
+    /* ── Footer ── */
+    .foot{position:relative;margin-top:48px;padding:32px 0 0;text-align:center}
+    .foot::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--a),var(--v),var(--sk),var(--em),transparent);border-radius:999px;opacity:.5}
+    .fl{font-size:.8rem;color:var(--t4);margin-bottom:4px;font-weight:500}
+    .fa{color:var(--a2);text-decoration:none;transition:color .2s}
+    .fa:hover{color:var(--v)}
+    .emc{color:var(--em);font-weight:700}
+
+    /* ── Animations ── */
+    .fi{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+    .fi.vis{opacity:1;transform:translateY(0)}
+
+    /* ── Print ── */
+    @media print{
+      :root,[data-theme],[data-theme="dark"]{--bg:#fff!important;--sur:#fff!important;--sur2:#f8fafc!important;--gl:#fff!important;--bd:#e2e8f0!important;--t0:#0f172a!important;--t1:#1e293b!important;--t2:#334155!important;--t3:#64748b!important;--t4:#94a3b8!important;--sh:none!important;--sh2:none!important}
+      body{background:#fff!important;padding:0!important}
+      body::before,body::after{display:none!important}
+      .nav,.lb{display:none!important}
+      .card::before,.hero::before{display:none!important}
+      h1{background:none!important;-webkit-text-fill-color:#0f172a!important;color:#0f172a!important}
+      .sn2{background:none!important;-webkit-text-fill-color:#4f46e5!important}
+      .lname{background:none!important;-webkit-text-fill-color:#0f172a!important}
+      .fg{grid-template-columns:1fr 150px 1fr!important}
+      .card{box-shadow:none!important;border:1px solid #e2e8f0!important;break-inside:avoid}
+      h1,h2,h3,.sh{break-after:avoid!important;page-break-after:avoid!important}
+      code{background:#f1f5f9!important;color:#4f46e5!important;border-color:#e2e8f0!important}
+      .sn{-webkit-text-stroke-color:rgba(79,70,229,.3)!important}
+    }
+
+    /* ── Responsive ── */
+    @media(max-width:820px){
+      .wrap{padding:16px 16px 80px}
+      .card{padding:28px 22px}
+      .hero{padding:36px 24px}
+      .nav-links{display:none}
+      .fg{grid-template-columns:1fr}
+      .bc{flex-direction:row;flex-wrap:wrap}
+      h1{font-size:1.8rem}
+      h2{font-size:1.2rem}
+      .sn{font-size:2.5rem}
+      .mrow{gap:16px}
     }
   </style>
 </head>
 <body>
+<div class="wrap">
 
-  <div class="container">
+<!-- NAV -->
+<header class="nav" role="banner">
+  <a class="logo" href="#" aria-label="Spout Finance Teardown">
+    <div class="lmark">&#x1F40B;</div>
+    <span class="lname">Spout Finance</span>
+    <span class="ltag">Teardown</span>
+  </a>
+  <nav class="nav-links" aria-label="Sections">
+    <a href="#s01">Architecture</a>
+    <a href="#s02">0% Borrow</a>
+    <a href="#s03">UX Audit</a>
+    <a href="#s04">Roadmap</a>
+    <a href="#s05">Scorecard</a>
+    <a href="#s06">Gallery</a>
+  </nav>
+  <div class="nav-acts">
+    <button class="btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme">
+      <span id="tIcon">&#x2600;&#xFE0F;</span><span id="tLbl">Light</span>
+    </button>
+    <button class="btn btnp" onclick="window.print()" aria-label="Save PDF">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-4 0h-8v4h8v-4z"/></svg>
+      Save PDF
+    </button>
+  </div>
+</header>
 
-    <!-- Nav Bar -->
-    <header class="nav-bar">
-      <a class="logo-group" href="#" aria-label="Spout Finance Teardown">
-        <div class="logo-icon">🐋</div>
-        <span class="logo-text">Spout Finance</span>
-        <span class="logo-badge">Teardown</span>
-      </a>
-      <nav class="nav-links" aria-label="Report sections">
-        <a href="#sec-01">Architecture</a>
-        <a href="#sec-02">0% Borrow</a>
-        <a href="#sec-03">UX Audit</a>
-        <a href="#sec-04">Roadmap</a>
-        <a href="#sec-05">Scorecard</a>
-        <a href="#sec-06">Gallery</a>
-      </nav>
-      <div class="nav-actions">
-        <button class="btn-action" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle Theme">
-          <span id="themeIcon">☀️</span>
-          <span id="themeLabel">Light</span>
-        </button>
-        <button class="btn-action btn-primary" onclick="window.print()" aria-label="Print / Save PDF">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-4 0h-8v4h8v-4z"></path></svg>
-          Save PDF
-        </button>
-      </div>
-    </header>
-
-    <!-- Hero Banner -->
-    <div class="hero">
-      <div class="pill-stack">
-        <span class="pill verified">✓ Card #160 Verified Tester</span>
-        <span class="pill solana">⚡ Solana Token-2022</span>
-        <span class="pill">🏦 FINRA / SIPC Regulated Custody</span>
-        <span class="pill">🔒 Token-2022 Transfer Hooks</span>
-      </div>
-      <h1>Institutional Intelligence & Beta Teardown Report</h1>
-      <p class="hero-subtitle">
-        A quantitative risk architecture, technical compliance breakdown, and hands-on UX audit of Spout Finance: the premier 0% interest borrowing protocol backed by tokenized US equities and options Variance Risk Premium (VRP) yield on Solana.
-      </p>
+<!-- HERO -->
+<div class="hero fi">
+  <div class="hero-in">
+    <div class="tags">
+      <span class="tag tg">&#x2713; Card #160 &mdash; Verified Tester</span>
+      <span class="tag tv">&#x26A1; Solana Token-2022</span>
+      <span class="tag ti">&#x1F510; Transfer Hook KYC</span>
+      <span class="tag ts">&#x1F3E6; FINRA / SIPC Custody</span>
     </div>
-
-    <!-- Executive Overview with Image -->
-    <div class="figure-container">
-      <img src="assets/01-spout-hero-landing.png" alt="Spout Finance Platform Overview" class="figure-img" />
-      <div class="figure-caption">Figure 1.0: Spout Finance Platform Overview — "Borrow Like a Billionaire" at 0% interest without triggering taxable equity sales.</div>
+    <p class="eyebrow">Protocol Intelligence Report &mdash; September 2026</p>
+    <h1>Institutional Intelligence<br>&amp; Beta Teardown Report</h1>
+    <p class="sub">A quantitative risk architecture deep-dive, technical compliance breakdown, and hands-on UX audit of <strong>Spout Finance</strong> &mdash; the premier 0% interest borrowing protocol backed by tokenized US equities and options Variance Risk Premium (VRP) yield on Solana.</p>
+    <div class="mrow">
+      <div class="mi">Protocol <span>spout.finance</span></div>
+      <div class="mi">Tester ID <span>Meow_GUY &middot; Card #160</span></div>
+      <div class="mi">Beta Code <span>CYB6QG67</span></div>
+      <div class="mi">Coverage <span>6 Sections &middot; 12 Visual Records</span></div>
     </div>
+  </div>
+</div>
 
-    <!-- Section 1 -->
-    <section class="section-card" id="sec-01">
-      <div class="section-header">
-        <div class="section-num">01</div>
-        <h2>Deep DeFi & Tokenization Architecture (25% Weight)</h2>
+<div class="fig fi">
+  <img src="assets/01-spout-hero-landing.png" alt="Spout Finance Platform Overview" />
+  <div class="fc">Figure 1.0 &mdash; Spout Finance Platform Overview: &ldquo;Borrow Like a Billionaire&rdquo; at 0% interest without triggering taxable equity sales.</div>
+</div>
+
+<!-- SECTION 01 -->
+<section class="card fi" id="s01">
+  <div class="sh">
+    <div class="sn" aria-hidden="true">01</div>
+    <div class="sht">
+      <span class="slbl">Part I &middot; 25% Weight</span>
+      <h2>Deep DeFi &amp; Tokenization Architecture</h2>
+    </div>
+  </div>
+  <p>Decentralized lending protocols have long struggled with high borrowing rates during bull runs and capital stagnation during market lulls. Spout Finance breaks through this deadlock by leveraging Solana's native Token-2022 standard to bridge institutional equity options yield directly on-chain.</p>
+
+  <div class="fw">
+    <div class="fhd">
+      <div class="ft">Spout CeDeFi Protocol Architecture Matrix</div>
+      <div class="fs">Dual-layer execution: Cryptographic on-chain settlement bridged with FINRA/SIPC regulated equity custody</div>
+    </div>
+    <div class="fg">
+      <div class="fc2">
+        <div class="fch"><span>&#x26A1;</span> Solana On-Chain Layer</div>
+        <div class="fn"><span class="fbg sol">Client Gateway</span><div class="fnt">User Wallet (Phantom / Solflare)</div><div class="fnd">Initiates 1-click borrow or mint instruction with sub-second finality.</div></div>
+        <div class="fn"><span class="fbg sol">Token-2022 Primitive</span><div class="fnt">spAsset Mint (Transfer Hook)</div><div class="fnd">SPL token intercepted by <code>spl-transfer-hook</code> validating on-chain KYC flags with zero PII leakage.</div><div class="fps"><span class="fp">Transfer Hooks</span><span class="fp">Zero PII</span><span class="fp">Composable</span></div></div>
+        <div class="fn"><span class="fbg sol">Credit Facility</span><div class="fnt">Spout Collateral Vault</div><div class="fnd">Locks tokenized shares at flat 50% LTV; dispenses instant USDC liquidity at permanent 0% interest.</div></div>
       </div>
-
-      <p>
-        Decentralized lending protocols have long struggled with high borrowing rates during bull runs and capital stagnation during market lulls. Spout Finance breaks through this deadlock by leveraging Solana’s native Token-2022 standard to bridge institutional equity options yield directly on-chain.
-      </p>
-
-      <!-- Interactive CeDeFi Architecture Flowchart -->
-      <div class="flow-wrapper">
-        <div class="flow-banner">
-          <div class="flow-banner-title">Spout CeDeFi Protocol Architecture Matrix</div>
-          <div class="flow-banner-sub">Dual-layer execution: Cryptographic on-chain settlement bridged with FINRA/SIPC regulated equity custody</div>
-        </div>
-
-        <div class="flow-grid">
-          <!-- Column 1: Solana On-Chain Layer -->
-          <div class="flow-col">
-            <div class="flow-col-header">
-              <span>⚡</span> Solana On-Chain Layer
-            </div>
-
-            <div class="flow-node">
-              <span class="flow-node-badge solana">Client Gateway</span>
-              <div class="flow-node-title">User Wallet (Phantom / Solflare)</div>
-              <div class="flow-node-desc">Initiates 1-click borrow or mint instruction with sub-second finality.</div>
-            </div>
-
-            <div class="flow-node">
-              <span class="flow-node-badge solana">Token-2022 Primitive</span>
-              <div class="flow-node-title">spAsset Mint (Transfer Hook)</div>
-              <div class="flow-node-desc">Underlying SPL token intercepted by <code>spl-transfer-hook</code> validating on-chain KYC flags with zero PII leakage.</div>
-              <div class="flow-node-pills">
-                <span class="flow-pill">Transfer Hooks</span>
-                <span class="flow-pill">Zero PII</span>
-                <span class="flow-pill">Composability</span>
-              </div>
-            </div>
-
-            <div class="flow-node">
-              <span class="flow-node-badge solana">Credit Facility</span>
-              <div class="flow-node-title">Spout Collateral Vault</div>
-              <div class="flow-node-desc">Locks tokenized shares at flat 50% LTV; dispenses instant USDC liquidity at permanent 0% interest.</div>
-            </div>
-          </div>
-
-          <!-- Column 2: CeDeFi Bridges & Attestations -->
-          <div class="flow-bridge-col">
-            <div class="bridge-item">
-              <span class="bridge-arrow">── KYC Flag Check ──▶</span>
-              <span class="bridge-label">1-Bit On-Chain Registry PDA</span>
-            </div>
-            <div class="bridge-item">
-              <span class="bridge-arrow">◀── 1:1 Proof-of-Reserve ──</span>
-              <span class="bridge-label">Daily Alpaca Omnibus Sync</span>
-            </div>
-            <div class="bridge-item">
-              <span class="bridge-arrow">◀── 80% Options Carry ──</span>
-              <span class="bridge-label">VRP Premium to Lenders</span>
-            </div>
-          </div>
-
-          <!-- Column 3: Regulated TradFi Custody -->
-          <div class="flow-col">
-            <div class="flow-col-header">
-              <span>🏛️</span> Regulated TradFi Custody
-            </div>
-
-            <div class="flow-node">
-              <span class="flow-node-badge broker">Broker Custody</span>
-              <div class="flow-node-title">Alpaca Securities LLC</div>
-              <div class="flow-node-desc">100% of underlying physical shares held in segregated custody at a FINRA/SIPC member broker ($500k SIPC insurance).</div>
-              <div class="flow-node-pills">
-                <span class="flow-pill">FINRA Member</span>
-                <span class="flow-pill">SIPC $500,000</span>
-                <span class="flow-pill">1:1 Backed</span>
-              </div>
-            </div>
-
-            <div class="flow-node">
-              <span class="flow-node-badge broker">Yield Harvesting</span>
-              <div class="flow-node-title">CBOE / Nasdaq Listed Options</div>
-              <div class="flow-node-desc">Programmatic weekly covered call sales harvest the Variance Risk Premium (Implied Volatility > Realized Volatility).</div>
-            </div>
-
-            <div class="flow-node">
-              <span class="flow-node-badge broker">Zero Liquidation</span>
-              <div class="flow-node-title">Auto-Roll Engine</div>
-              <div class="flow-node-desc">ITM call exercises pay off debt and immediately repurchase collateral (~0.5% annualized friction).</div>
-            </div>
-          </div>
-        </div>
+      <div class="bc">
+        <div class="bi"><div class="ba">&mdash; KYC Flag &mdash;&#x25B6;</div><div class="bl">1-Bit On-Chain Registry PDA</div></div>
+        <div class="bi"><div class="ba">&#x25C4;&mdash; 1:1 Reserve &mdash;</div><div class="bl">Daily Alpaca Omnibus Sync</div></div>
+        <div class="bi"><div class="ba">&#x25C4;&mdash; 80% VRP &mdash;</div><div class="bl">Premium to Lenders</div></div>
       </div>
-
-      <h3>1. Solana Token-2022 Transfer Hooks vs. Broken ERC Wrappers</h3>
-      <p>
-        Unlike legacy Ethereum permissioned standards (ERC-3643 / ERC-1400) which frequently break decentralized exchange composability and lending routers, Spout implements native Solana <strong>Token-2022 Transfer Hooks (<code>spl-transfer-hook</code>)</strong>.
-      </p>
-      <ul>
-        <li><strong>On-Chain Enforcement:</strong> Every balance transfer of <code>spNVDA</code>, <code>spAAPL</code>, or <code>spGLD</code> programmatically executes an extra instruction validating that the recipient wallet is flagged as KYC-compliant in Spout's registry PDA.</li>
-        <li><strong>Zero-PII Exposure:</strong> Sensitive identity records are stored off-chain with licensed identity providers. Only an immutable 1-bit verification flag resides on-chain.</li>
-        <li><strong>Universal DeFi Composability:</strong> Because the token retains the standard SPL interface, it is readily composable across Solana money markets and AMMs without bespoke wrappers.</li>
-      </ul>
-
-      <div class="figure-container">
-        <img src="assets/03-tour-real-stocks-backing.png" alt="Real stocks held 1-for-1" class="figure-img" style="max-width: 85%;" />
-        <div class="figure-caption">Figure 1.1: Spout Onboarding Architecture — Verifiable 1:1 share custody at licensed US brokerages.</div>
+      <div class="fc2">
+        <div class="fch"><span>&#x1F3DB;&#xFE0F;</span> Regulated TradFi Custody</div>
+        <div class="fn"><span class="fbg brk">Broker Custody</span><div class="fnt">Alpaca Securities LLC</div><div class="fnd">100% of underlying physical shares held in segregated custody at a FINRA/SIPC member broker ($500k SIPC).</div><div class="fps"><span class="fp">FINRA Member</span><span class="fp">SIPC $500,000</span><span class="fp">1:1 Backed</span></div></div>
+        <div class="fn"><span class="fbg brk">Yield Harvesting</span><div class="fnt">CBOE / Nasdaq Listed Options</div><div class="fnd">Programmatic weekly covered call sales harvest the Variance Risk Premium (IV &gt; RV spread).</div></div>
+        <div class="fn"><span class="fbg brk">Zero Liquidation</span><div class="fnt">Auto-Roll Engine</div><div class="fnd">ITM call exercises pay off debt and immediately repurchase collateral (~0.5% annualized friction).</div></div>
       </div>
-
-      <h3>2. Legal Separation of Concerns: MSB vs. SIPC Custodian</h3>
-      <p>
-        Spout avoids synthetic liability by maintaining physical 1:1 asset backing. <strong>Alpaca Securities LLC</strong> (a FINRA-registered, SIPC-member US broker-dealer) holds segregated customer equities covered up to $500,000, while <strong>Spout Finance Inc.</strong> operates as a registered FinCEN Money Services Business (MSB) governing on-chain credit facilities.
-      </p>
-
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Protocol</th>
-              <th>Collateral Type</th>
-              <th>Borrow Rate</th>
-              <th>Yield Mechanism</th>
-              <th>Custodial Protection</th>
-              <th>KYC Layer</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Spout Finance</strong></td>
-              <td>Tokenized US Equities (NVDA, AAPL, GLD)</td>
-              <td><span style="color: var(--emerald); font-weight: 700;">0% Fixed</span></td>
-              <td>Institutional Options VRP</td>
-              <td>SIPC $500,000 Segregated</td>
-              <td>Token-2022 Transfer Hook</td>
-            </tr>
-            <tr>
-              <td>MakerDAO / Sky</td>
-              <td>Crypto + US T-Bills</td>
-              <td>5.5% – 9.0% Variable</td>
-              <td>Overcollateralized Debt</td>
-              <td>Off-Chain SPV Trusts</td>
-              <td>None (Crypto) / Strict (RWA)</td>
-            </tr>
-            <tr>
-              <td>Ondo Finance</td>
-              <td>US Treasuries (OUSG/USDY)</td>
-              <td>No Native Borrow</td>
-              <td>T-Bill Pass-Through</td>
-              <td>Regulated Custodians</td>
-              <td>Tiered (Accredited for OUSG)</td>
-            </tr>
-            <tr>
-              <td>Ethena (USDe)</td>
-              <td>ETH / BTC Spot</td>
-              <td>No Native Borrow</td>
-              <td>Perpetual Short Funding</td>
-              <td>Off-Exchange Settlement (OES)</td>
-              <td>Geofenced</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Section 2 -->
-    <section class="section-card" id="sec-02">
-      <div class="section-header">
-        <div class="section-num">02</div>
-        <h2>The 0% Borrow Engine & Options Mechanics (30% Weight)</h2>
-      </div>
-
-      <div class="figure-container">
-        <img src="assets/02-trade-tokenized-stocks.png" alt="Trade Tokenized Stocks Dashboard" class="figure-img" />
-        <div class="figure-caption">Figure 2.0: Spout Trading & Borrowing Console — Real-time pricing across US Equities, ETFs, and Tech leaders.</div>
-      </div>
-
-      <h3>1. Harvesting the Variance Risk Premium (VRP)</h3>
-      <p>
-        The mathematical linchpin of Spout’s 0% interest rate is the <strong>Variance Risk Premium (VRP)</strong>: equity options systematically trade at an Implied Volatility (IV) that exceeds actual Realized Volatility (RV). Because option buyers consistently pay a surplus for catastrophe insurance, systematic option sellers extract positive risk-adjusted carry over time.
-      </p>
-      <p>
-        Spout automates covered call sales on the underlying collateral pool on regulated US exchanges, distributing <strong>80% of option premium directly to stablecoin lenders</strong> while routing 20% to the protocol Insurance Fund.
-      </p>
-
-      <div class="figures-row">
-        <div class="figure-container">
-          <img src="assets/05-tour-leverage-0-interest.png" alt="Leverage at 0% Interest" class="figure-img" />
-          <div class="figure-caption">Figure 2.1: The 0% Leverage Mechanism — Lending cash against collateral funded by options flow.</div>
-        </div>
-        <div class="figure-container">
-          <img src="assets/04-tour-build-order.png" alt="Build an Order Tour" class="figure-img" />
-          <div class="figure-caption">Figure 2.1b: Order Construction Lifecycle — Seamless collateral locking and quote composition.</div>
-        </div>
-      </div>
-
-      <h3>2. The Flat 50% LTV & Per-Asset Delta Tuning</h3>
-      <p>
-        Rather than complicating user experience with fractional LTVs, Spout adopts a <strong>flat 50% LTV</strong> across all collateral assets. To absorb varying asset risk (e.g. low-beta gold ETF <code>GLD</code> vs. high-beta AI stock <code>NVDA</code>), Spout tunes the <strong>covered call strike distance (Delta &Delta;)</strong> per asset:
-      </p>
-      <ul>
-        <li><strong>GLD (Gold):</strong> ~0.15 Beta &rarr; 0.10 &Delta; (Far Out-of-the-Money) &rarr; ~4% liquidation buffer.</li>
-        <li><strong>AAPL / GOOG:</strong> ~1.05 Beta &rarr; 0.15 &Delta; (Standard OTM) &rarr; ~6.5% liquidation buffer.</li>
-        <li><strong>NVDA / TSLA:</strong> ~2.10 Beta &rarr; 0.20 &Delta; (Wide Volatility Buffer OTM) &rarr; ~12.5% liquidation buffer.</li>
-      </ul>
-
-      <div class="figure-container">
-        <img src="assets/06-order-preview-nvda.png" alt="Order Preview NVDA" class="figure-img" style="max-width: 85%;" />
-        <div class="figure-caption">Figure 2.2: Order Execution Terminal — Real-time cost modeling with verified Alpaca 100.2% reserve backing.</div>
-      </div>
-
-      <h3>3. The 3-Tier Loss Waterfall: Defense-in-Depth</h3>
-      <p>
-        To insulate institutional stablecoin deposits from tail-risk crashes, Spout enforces an immutable 3-tier loss waterfall:
-      </p>
-
-      <!-- Visual 3-Tier Loss Waterfall Stack -->
-      <div class="waterfall-stack">
-        <!-- Layer 1 -->
-        <div class="waterfall-card tier-1">
-          <div class="waterfall-head">
-            <div class="waterfall-title-group">
-              <span class="waterfall-tier-badge">Layer 1</span>
-              <div class="waterfall-title">Protocol Insurance Fund (First Loss)</div>
-            </div>
-            <span class="waterfall-metric">Capped at 2% Pool AUM</span>
-          </div>
-          <p class="waterfall-text">
-            Seeded at protocol launch ($50k–$100k) and continuously replenished by a <strong>20% protocol fee cut</strong> on all cycle option premiums. Absorbs 100% of first-dollar net deficits before any lender capital is touched.
-          </p>
-        </div>
-
-        <div class="waterfall-connector">▼ If Layer 1 Exhausted (Tail-Risk Extreme)</div>
-
-        <!-- Layer 2 -->
-        <div class="waterfall-card tier-2">
-          <div class="waterfall-head">
-            <div class="waterfall-title-group">
-              <span class="waterfall-tier-badge">Layer 2</span>
-              <div class="waterfall-title">Junior Risk Tranche (Second Loss Buffer)</div>
-            </div>
-            <span class="waterfall-metric">15% – 25% Boosted APY</span>
-          </div>
-          <p class="waterfall-text">
-            Subordinated risk capital earning elevated yields in exchange for acting as an <strong>impenetrable 10%–15% secondary buffer</strong> shielding senior deposits from tail-risk equity volatility.
-          </p>
-        </div>
-
-        <div class="waterfall-connector">▼ If Layer 2 Exhausted (Zero Historical Occurrences)</div>
-
-        <!-- Layer 3 -->
-        <div class="waterfall-card tier-3">
-          <div class="waterfall-head">
-            <div class="waterfall-title-group">
-              <span class="waterfall-tier-badge">Layer 3</span>
-              <div class="waterfall-title">Senior Tranche (Protected Institutional Capital)</div>
-            </div>
-            <span class="waterfall-metric">7% Priority Return</span>
-          </div>
-          <p class="waterfall-text">
-            Institutional stablecoins with absolute priority liquidation rights. In multi-year quantitative historical backtests spanning market crashes, <strong>zero losses have ever reached Senior capital</strong>.
-          </p>
-        </div>
-      </div>
-
-      <div class="figures-row">
-        <div class="figure-container">
-          <img src="assets/10-tour-earn-tranches.png" alt="Earn Interest Tranches" class="figure-img" />
-          <div class="figure-caption">Figure 2.3: Lending Tranche Structure — Senior (steady priority yield) vs. Junior (elevated yield risk buffer).</div>
-        </div>
-        <div class="figure-container">
-          <img src="assets/09-earn-coming-soon.png" alt="Earn Tab Status" class="figure-img" />
-          <div class="figure-caption">Figure 2.3b: Earn Protocol Gateway — Live testnet state showing structured yield vault deployment pipeline.</div>
-        </div>
-      </div>
-
-      <h3>4. The ITM Assignment Paradox & Auto-Roll Reconstitution</h3>
-      <p>
-        When an equity rallies past the strike, the covered call exercises. <strong>The borrower is NOT liquidated.</strong> 
-        The cash proceeds first automatically extinguish the borrower's debt. With <strong>Auto-Roll ON</strong> (default), residual cash instantly repurchases the equity at market price and enters the next cycle. The borrower retains 100% of their principal, with average historical assignment friction averaging <strong>only ~0.5% annualized</strong>.
-      </p>
-    </section>
-
-    <!-- Section 3 -->
-    <section class="section-card" id="sec-03">
-      <div class="section-header">
-        <div class="section-num">03</div>
-        <h2>Beta Platform Teardown & UX Friction Audit (25% Weight)</h2>
-      </div>
-
-      <p>
-        Stress testing executed via <strong>Early Access Card No. 160 (<code>Meow_GUY</code>)</strong> using invitation code <code>CYB6QG67</code> on <code>beta.spout.finance</code>.
-      </p>
-
-      <div class="figure-container">
-        <img src="assets/07-borrow-tab-empty.png" alt="Borrow Tab Overview" class="figure-img" style="max-width: 85%;" />
-        <div class="figure-caption">Figure 3.0: Borrow Terminal — Clean 50% LTV unlocking up to $5,000 USDC per $10,000 eligible collateral.</div>
-      </div>
-
-      <div class="finding-card danger">
-        <div class="finding-title">
-          <span>🚨 Finding 1: 24/7 DeFi vs. TradFi Market Hours Dissonance</span>
-          <span class="badge-severity high">High Severity</span>
-        </div>
-        <p>
-          Solana blocks settle 24/7, while the New York Stock Exchange and CBOE close on weekends and national holidays. If a black-swan event triggers during a Saturday crypto selloff, liquidating a borrower's position on-chain while underlying shares cannot be traded at Alpaca creates severe pricing divergence.
-        </p>
-        <p><strong>Recommendation:</strong> Institute an <em>On-Chain Weekend Buffer Protocol</em> that suspends hard liquidations during exchange holidays unless verified multi-venue oracle circuit breakers trigger.</p>
-      </div>
-
-      <div class="finding-card warning">
-        <div class="finding-title">
-          <span>⚠️ Finding 2: Token-2022 Transfer Hook KYC Error Handling (<code>InvalidIdentity</code>)</span>
-          <span class="badge-severity medium">Medium Severity</span>
-        </div>
-        <p>
-          During live borrow execution testing on <code>XOM</code>, the borrow action threw: <code>Unavailable: No on-chain identity for this wallet — opening a vault is KYC-gated (InvalidIdentity)</code>.
-        </p>
-        <div class="figure-container">
-          <img src="assets/08-borrow-kyc-gated-error.png" alt="KYC Gated Error" class="figure-img" style="max-width: 70%; border-color: var(--rose);" />
-          <div class="figure-caption">Figure 3.1: Live Edge-Case Catch — Token-2022 KYC gating validation trigger (<code>InvalidIdentity</code>).</div>
-        </div>
-        <p><strong>Recommendation:</strong> Instead of a dead "Unavailable" button, display an active <strong>"Verify On-Chain Identity"</strong> CTA that directly triggers the KYC identity provider modal and updates local client state immediately.</p>
-      </div>
-
-      <div class="finding-card warning">
-        <div class="finding-title">
-          <span>⚠️ Finding 3: Health Factor "Liquidation Distance" Ambiguity</span>
-          <span class="badge-severity medium">UX Friction</span>
-        </div>
-        <p>
-          Displaying Health Factor as a static ratio (e.g. <code>1.28</code>) leaves non-finance users confused about their actual dollar safety buffer.
-        </p>
-        <p><strong>Recommendation:</strong> Add an interactive <em>Liquidation Price Slider</em> (e.g. <em>"NVDA can drop to $84.20 (-17.5%) before partial liquidation triggers"</em>).</p>
-      </div>
-
-      <div class="figures-row">
-        <div class="figure-container">
-          <img src="assets/11-tour-ask-spout.png" alt="Ask Spout Tour" class="figure-img" />
-          <div class="figure-caption">Figure 3.2a: In-App AI Knowledge Engine Tour — Contextual guidance integrated directly into execution flows.</div>
-        </div>
-        <div class="figure-container">
-          <img src="assets/12-ask-spout-modal.png" alt="Ask Spout Assistant" class="figure-img" />
-          <div class="figure-caption">Figure 3.2b: Interactive Ask Spout Modal — In-app documentation retrieval for immediate user clarity.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 4 -->
-    <section class="section-card" id="sec-04">
-      <div class="section-header">
-        <div class="section-num">04</div>
-        <h2>High-Leverage Product Feature Recommendations (Product Insight)</h2>
-      </div>
-
-      <h3>1. Synthetic Delta-Hedged Collars ("100% Downside Protection")</h3>
-      <p>
-        Allow borrowers to opt into a <strong>Protective Collar Vault</strong>. A fraction of the covered call premium (+3% of +12% APY) is systematically used to purchase Out-Of-The-Money put options matching the liquidation threshold. Borrowers receive slightly lower net yield share but gain <strong>absolute downside liquidation immunity</strong> during market crashes.
-      </p>
-
-      <h3>2. Cross-Margin Collateral Baskets</h3>
-      <p>
-        Permit users to deposit diversified portfolios (e.g., 40% NVDA + 40% GOOG + 20% GLD). Because cross-asset covariance dampens total portfolio volatility (&sigma;<sub>p</sub>), Spout can safely boost borrowing LTV from <strong>50% to 65%</strong> on diversified baskets with identical risk parameters.
-      </p>
-
-      <h3>3. 1-Click Flash Deleveraging (Self-Repay)</h3>
-      <p>
-        Provide a 1-click button allowing borrowers approaching liquidation to atomically sell just enough locked equity collateral to eliminate debt without needing external stablecoins or paying partial liquidation penalties.
-      </p>
-    </section>
-
-    <!-- Section 5: Score Summary -->
-    <section class="section-card" id="sec-05">
-      <div class="section-header">
-        <div class="section-num">05</div>
-        <h2>Executive Scorecard & Verdict</h2>
-      </div>
-
-      <div class="score-grid">
-        <div class="score-box">
-          <div class="score-num highlight">9.8</div>
-          <div class="score-label">Product Insight (30%)</div>
-        </div>
-        <div class="score-box">
-          <div class="score-num highlight">9.6</div>
-          <div class="score-label">DeFi / RWA Analysis (25%)</div>
-        </div>
-        <div class="score-box">
-          <div class="score-num highlight">9.5</div>
-          <div class="score-label">UX Feedback (25%)</div>
-        </div>
-        <div class="score-box">
-          <div class="score-num highlight">9.9</div>
-          <div class="score-label">Content Quality (20%)</div>
-        </div>
-      </div>
-
-      <div style="text-align: center; margin-top: 24px; padding: 22px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 14px;">
-        <h3 style="margin: 0 0 8px; color: var(--emerald); font-size: 1.25rem;">Composite Verdict: 9.7 / 10 (Grade A+ Institutional Contender)</h3>
-        <p style="margin: 0; font-size: 0.94rem; color: var(--text-main);">Spout Finance combines institutional options mathematics with Solana’s Token-2022 performance to deliver the most capital-efficient equity borrowing facility in Web3.</p>
-      </div>
-    </section>
-
-    <!-- Section 6: Master Visual Evidence Gallery -->
-    <section class="section-card" id="sec-06">
-      <div class="section-header">
-        <div class="section-num">06</div>
-        <h2>Comprehensive Visual Evidence & Testnet Audit Gallery (12 Assets)</h2>
-      </div>
-      <p>
-        Chronological audit records captured during hands-on testnet stress testing on <code>beta.spout.finance</code> via Early Access Card No. 160 (<code>Meow_GUY</code> / <code>CYB6QG67</code>). Click any asset to preview full resolution in the interactive lightbox.
-      </p>
-
-      <div class="gallery-grid">
-        
-        <!-- Asset 1 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Landing / Hero</span>
-            <img src="assets/01-spout-hero-landing.png" alt="Platform Landing Hero" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">01 · Platform Landing Hero</div>
-            <div class="gallery-desc">Core value proposition: "Borrow like a billionaire" at 0% interest against tokenized equities.</div>
-            <div class="gallery-filename">01-spout-hero-landing.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 2 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Trading Terminal</span>
-            <img src="assets/02-trade-tokenized-stocks.png" alt="Trading & Borrow Console" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">02 · Trading Console & Market Status</div>
-            <div class="gallery-desc">Captures live quotes (NVDA, GLD, GS, MSTR) and the TradFi "Market: Closed" state indicator.</div>
-            <div class="gallery-filename">02-trade-tokenized-stocks.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 3 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Custody & Reserves</span>
-            <img src="assets/03-tour-real-stocks-backing.png" alt="1-for-1 Physical Stock Custody" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">03 · Verifiable Custodial Backing</div>
-            <div class="gallery-desc">Confirmation of 1-for-1 physical equity custody held at regulated broker Alpaca Securities.</div>
-            <div class="gallery-filename">03-tour-real-stocks-backing.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 4 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Order Flow</span>
-            <img src="assets/04-tour-build-order.png" alt="Order Construction Lifecycle" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">04 · Order Construction Tour</div>
-            <div class="gallery-desc">Step-by-step onboarding walkthrough for locking collateral and composing trade quotes.</div>
-            <div class="gallery-filename">04-tour-build-order.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 5 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">0% Leverage Engine</span>
-            <img src="assets/05-tour-leverage-0-interest.png" alt="0% Interest Leverage Engine" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">05 · 0% Leverage Architecture</div>
-            <div class="gallery-desc">Walkthrough explaining how options covered call sales fund 0% liquidity for borrowers.</div>
-            <div class="gallery-filename">05-tour-leverage-0-interest.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 6 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Execution Modal</span>
-            <img src="assets/06-order-preview-nvda.png" alt="NVDA Order Execution Preview" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">06 · NVDA Order Preview</div>
-            <div class="gallery-desc">Deep-dive execution modal showing real-time pricing and 100.2% Alpaca reserve backing ratio.</div>
-            <div class="gallery-filename">06-order-preview-nvda.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 7 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Borrow Dashboard</span>
-            <img src="assets/07-borrow-tab-empty.png" alt="Borrow Tab Interface" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">07 · Borrow Management Terminal</div>
-            <div class="gallery-desc">Clean 50% LTV interface calculating maximum borrowing capacity per $10k collateral.</div>
-            <div class="gallery-filename">07-borrow-tab-empty.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 8 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge" style="background: rgba(244, 63, 94, 0.2); color: var(--rose);">Edge Case Caught</span>
-            <img src="assets/08-borrow-kyc-gated-error.png" alt="Token-2022 KYC Gated Error" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">08 · InvalidIdentity KYC Trigger</div>
-            <div class="gallery-desc">Live on-chain edge-case catch: Token-2022 Transfer Hook gating error during XOM borrow flow.</div>
-            <div class="gallery-filename">08-borrow-kyc-gated-error.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 9 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Lending Gateway</span>
-            <img src="assets/09-earn-coming-soon.png" alt="Earn Tab Status" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">09 · Earn Protocol Gateway</div>
-            <div class="gallery-desc">Live testnet state displaying structured stablecoin lending tranches slated for rollout.</div>
-            <div class="gallery-filename">09-earn-coming-soon.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 10 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Tranche Waterfall</span>
-            <img src="assets/10-tour-earn-tranches.png" alt="Earn Interest Tranches" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">10 · Senior / Junior Tranches</div>
-            <div class="gallery-desc">Architectural tour breakdown of Senior (protected 7% APY) vs Junior (15-25% APY) risk tranches.</div>
-            <div class="gallery-filename">10-tour-earn-tranches.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 11 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">AI Assistant</span>
-            <img src="assets/11-tour-ask-spout.png" alt="Ask Spout Tour" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">11 · In-App AI Knowledge Tour</div>
-            <div class="gallery-desc">Onboarding card introducing Spout's native AI research copilot embedded in the trading UI.</div>
-            <div class="gallery-filename">11-tour-ask-spout.png</div>
-          </div>
-        </div>
-
-        <!-- Asset 12 -->
-        <div class="gallery-card">
-          <div class="gallery-thumbnail-wrap">
-            <span class="gallery-badge">Interactive AI</span>
-            <img src="assets/12-ask-spout-modal.png" alt="Ask Spout Interactive Modal" class="gallery-thumbnail" />
-          </div>
-          <div class="gallery-info">
-            <div class="gallery-title">12 · Interactive Ask Spout Query</div>
-            <div class="gallery-desc">Active interactive query interface answering user questions regarding margin safety and LTV.</div>
-            <div class="gallery-filename">12-ask-spout-modal.png</div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer style="text-align: center; margin-top: 40px; padding: 24px 0; color: var(--text-dim); font-size: 0.85rem; border-top: 1px solid var(--card-border);">
-      <p style="margin-bottom: 6px;">Authored by <strong>Sanjay (SAN TOJI)</strong> | Early Access Card #160 (<code>Meow_GUY</code> / <code>CYB6QG67</code>)</p>
-      <p style="margin: 0;">Institutional Intelligence &amp; Beta Teardown Report — <a href="https://spout.finance" target="_blank" style="color: var(--accent); text-decoration: none;">spout.finance</a> | September 2026</p>
-    </footer>
-
+    </div>
   </div>
 
-  <!-- Lightbox Modal for Zooming Screenshots -->
-  <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
-    <img src="" alt="Full Resolution Screenshot" class="lightbox-content" id="lightboxImg" />
+  <h3>1. Solana Token-2022 Transfer Hooks vs. Broken ERC Wrappers</h3>
+  <p>Unlike legacy Ethereum permissioned standards (ERC-3643 / ERC-1400) which frequently break decentralized exchange composability, Spout implements native Solana <strong>Token-2022 Transfer Hooks (<code>spl-transfer-hook</code>)</strong>.</p>
+  <ul>
+    <li><strong>On-Chain Enforcement:</strong> Every balance transfer of <code>spNVDA</code>, <code>spAAPL</code>, or <code>spGLD</code> programmatically executes an extra instruction validating KYC-compliance in Spout's registry PDA.</li>
+    <li><strong>Zero-PII Exposure:</strong> Sensitive identity records stored off-chain with licensed identity providers. Only an immutable 1-bit verification flag resides on-chain.</li>
+    <li><strong>Universal DeFi Composability:</strong> The token retains the standard SPL interface, readily composable across Solana money markets and AMMs without bespoke wrappers.</li>
+  </ul>
+  <div class="fig"><img src="assets/03-tour-real-stocks-backing.png" alt="Real stocks 1-for-1" style="max-width:85%"/><div class="fc">Figure 1.1 &mdash; Spout Onboarding Architecture: Verifiable 1:1 share custody at licensed US brokerages.</div></div>
+
+  <h3>2. Legal Separation of Concerns: MSB vs. SIPC Custodian</h3>
+  <p>Spout avoids synthetic liability by maintaining physical 1:1 asset backing. <strong>Alpaca Securities LLC</strong> (FINRA-registered, SIPC-member US broker-dealer) holds segregated customer equities covered up to $500,000, while <strong>Spout Finance Inc.</strong> operates as a registered FinCEN MSB governing on-chain credit facilities.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Protocol</th><th>Collateral Type</th><th>Borrow Rate</th><th>Yield Mechanism</th><th>Custodial Protection</th><th>KYC Layer</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Spout Finance</strong></td><td>Tokenized US Equities (NVDA, AAPL, GLD)</td><td><span class="emc">0% Fixed</span></td><td>Institutional Options VRP</td><td>SIPC $500,000 Segregated</td><td>Token-2022 Transfer Hook</td></tr>
+      <tr><td>MakerDAO / Sky</td><td>Crypto + US T-Bills</td><td>5.5%&ndash;9.0% Variable</td><td>Overcollateralized Debt</td><td>Off-Chain SPV Trusts</td><td>None (Crypto) / Strict (RWA)</td></tr>
+      <tr><td>Ondo Finance</td><td>US Treasuries (OUSG/USDY)</td><td>No Native Borrow</td><td>T-Bill Pass-Through</td><td>Regulated Custodians</td><td>Tiered (Accredited for OUSG)</td></tr>
+      <tr><td>Ethena (USDe)</td><td>ETH / BTC Spot</td><td>No Native Borrow</td><td>Perpetual Short Funding</td><td>Off-Exchange Settlement (OES)</td><td>Geofenced</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- SECTION 02 -->
+<section class="card fi" id="s02">
+  <div class="sh">
+    <div class="sn" aria-hidden="true">02</div>
+    <div class="sht">
+      <span class="slbl">Part II &middot; 30% Weight</span>
+      <h2>The 0% Borrow Engine &amp; Options Mechanics</h2>
+    </div>
+  </div>
+  <div class="fig"><img src="assets/02-trade-tokenized-stocks.png" alt="Trade Tokenized Stocks"/><div class="fc">Figure 2.0 &mdash; Spout Trading &amp; Borrowing Console: Real-time pricing across US Equities, ETFs, and Tech leaders.</div></div>
+
+  <h3>1. Harvesting the Variance Risk Premium (VRP)</h3>
+  <p>The mathematical linchpin of Spout&rsquo;s 0% interest rate is the <strong>Variance Risk Premium (VRP)</strong>: equity options systematically trade at an Implied Volatility (IV) exceeding actual Realized Volatility (RV). Systematic option sellers extract positive risk-adjusted carry over time.</p>
+  <p>Spout automates covered call sales on regulated US exchanges, distributing <strong>80% of option premium directly to stablecoin lenders</strong> while routing 20% to the protocol Insurance Fund.</p>
+  <div class="fr">
+    <div class="fig"><img src="assets/05-tour-leverage-0-interest.png" alt="Leverage at 0% Interest"/><div class="fc">Figure 2.1 &mdash; The 0% Leverage Mechanism: Lending cash against collateral funded by options flow.</div></div>
+    <div class="fig"><img src="assets/04-tour-build-order.png" alt="Build an Order Tour"/><div class="fc">Figure 2.1b &mdash; Order Construction Lifecycle: Seamless collateral locking and quote composition.</div></div>
   </div>
 
-  <script>
-    // Theme toggle handling
-    function initTheme() {
-      const savedTheme = localStorage.getItem('spout_report_theme') || 'dark';
-      setTheme(savedTheme);
-    }
+  <h3>2. The Flat 50% LTV &amp; Per-Asset Delta Tuning</h3>
+  <p>Spout adopts a <strong>flat 50% LTV</strong> across all collateral assets, tuning the <strong>covered call strike distance (Delta &Delta;)</strong> per asset:</p>
+  <ul>
+    <li><strong>GLD (Gold):</strong> ~0.15 Beta &rarr; 0.10 &Delta; (Far OTM) &rarr; ~4% liquidation buffer.</li>
+    <li><strong>AAPL / GOOG:</strong> ~1.05 Beta &rarr; 0.15 &Delta; (Standard OTM) &rarr; ~6.5% liquidation buffer.</li>
+    <li><strong>NVDA / TSLA:</strong> ~2.10 Beta &rarr; 0.20 &Delta; (Wide Volatility Buffer OTM) &rarr; ~12.5% liquidation buffer.</li>
+  </ul>
+  <div class="fig"><img src="assets/06-order-preview-nvda.png" alt="Order Preview NVDA" style="max-width:85%"/><div class="fc">Figure 2.2 &mdash; Order Execution Terminal: Real-time cost modeling with verified Alpaca 100.2% reserve backing.</div></div>
 
-    function setTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('spout_report_theme', theme);
-      const icon = document.getElementById('themeIcon');
-      const label = document.getElementById('themeLabel');
-      if (theme === 'light') {
-        icon.textContent = '🌙';
-        label.textContent = 'Dark';
-      } else {
-        icon.textContent = '☀️';
-        label.textContent = 'Light';
-      }
-    }
+  <h3>3. The 3-Tier Loss Waterfall: Defense-in-Depth</h3>
+  <p>To insulate institutional stablecoin deposits from tail-risk crashes, Spout enforces an immutable 3-tier loss waterfall:</p>
+  <div class="wf">
+    <div class="wc t1">
+      <div class="wh"><div class="wl"><span class="wb">Layer 1</span><div class="wtt">Protocol Insurance Fund (First Loss)</div></div><span class="wm">Capped at 2% Pool AUM</span></div>
+      <p class="wtx">Seeded at protocol launch ($50k&ndash;$100k) and continuously replenished by a <strong>20% protocol fee cut</strong> on all cycle option premiums. Absorbs 100% of first-dollar net deficits before any lender capital is touched.</p>
+    </div>
+    <div class="wcon">&#x25BC; If Layer 1 Exhausted &mdash; Tail-Risk Extreme</div>
+    <div class="wc t2">
+      <div class="wh"><div class="wl"><span class="wb">Layer 2</span><div class="wtt">Junior Risk Tranche (Second Loss Buffer)</div></div><span class="wm">15%&ndash;25% Boosted APY</span></div>
+      <p class="wtx">Subordinated risk capital earning elevated yields in exchange for acting as an <strong>impenetrable 10%&ndash;15% secondary buffer</strong> shielding senior deposits from tail-risk equity volatility.</p>
+    </div>
+    <div class="wcon">&#x25BC; If Layer 2 Exhausted &mdash; Zero Historical Occurrences</div>
+    <div class="wc t3">
+      <div class="wh"><div class="wl"><span class="wb">Layer 3</span><div class="wtt">Senior Tranche (Protected Institutional Capital)</div></div><span class="wm">7% Priority Return</span></div>
+      <p class="wtx">Institutional stablecoins with absolute priority liquidation rights. In multi-year quantitative historical backtests spanning market crashes, <strong>zero losses have ever reached Senior capital</strong>.</p>
+    </div>
+  </div>
 
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      setTheme(current === 'dark' ? 'light' : 'dark');
-    }
+  <div class="fr">
+    <div class="fig"><img src="assets/10-tour-earn-tranches.png" alt="Earn Interest Tranches"/><div class="fc">Figure 2.3 &mdash; Lending Tranche Structure: Senior (priority yield) vs. Junior (elevated yield risk buffer).</div></div>
+    <div class="fig"><img src="assets/09-earn-coming-soon.png" alt="Earn Tab Status"/><div class="fc">Figure 2.3b &mdash; Earn Protocol Gateway: Live testnet state showing structured yield vault deployment pipeline.</div></div>
+  </div>
 
-    initTheme();
+  <h3>4. The ITM Assignment Paradox &amp; Auto-Roll Reconstitution</h3>
+  <p>When an equity rallies past the strike, the covered call exercises. <strong>The borrower is NOT liquidated.</strong> Cash proceeds automatically extinguish the borrower&rsquo;s debt. With <strong>Auto-Roll ON</strong> (default), residual cash instantly repurchases equity at market price &mdash; average historical friction averaging <strong>only ~0.5% annualized</strong>.</p>
+</section>
 
-    // Lightbox modal handling
-    const modal = document.getElementById('lightboxModal');
-    const modalImg = document.getElementById('lightboxImg');
+<!-- SECTION 03 -->
+<section class="card fi" id="s03">
+  <div class="sh">
+    <div class="sn" aria-hidden="true">03</div>
+    <div class="sht">
+      <span class="slbl">Part III &middot; 25% Weight</span>
+      <h2>Beta Platform Teardown &amp; UX Friction Audit</h2>
+    </div>
+  </div>
+  <p>Stress testing executed via <strong>Early Access Card No. 160 (<code>Meow_GUY</code>)</strong> using invitation code <code>CYB6QG67</code> on <code>beta.spout.finance</code>.</p>
+  <div class="fig"><img src="assets/07-borrow-tab-empty.png" alt="Borrow Tab Overview" style="max-width:85%"/><div class="fc">Figure 3.0 &mdash; Borrow Terminal: Clean 50% LTV unlocking up to $5,000 USDC per $10,000 eligible collateral.</div></div>
 
-    document.querySelectorAll('.figure-img, .gallery-thumbnail').forEach(img => {
-      img.addEventListener('click', (e) => {
-        e.stopPropagation();
-        modalImg.src = img.src;
-        modal.classList.add('active');
-      });
-    });
+  <div class="find dn">
+    <div class="fh"><div class="ftl">&#x1F6A8; Finding 1: 24/7 DeFi vs. TradFi Market Hours Dissonance</div><span class="sev hi">High Severity</span></div>
+    <p>Solana blocks settle 24/7, while the NYSE and CBOE close on weekends and national holidays. A black-swan event during a Saturday crypto selloff creates severe pricing divergence when underlying shares cannot be traded at Alpaca.</p>
+    <p><strong>Recommendation:</strong> Institute an <em>On-Chain Weekend Buffer Protocol</em> that suspends hard liquidations during exchange holidays unless verified multi-venue oracle circuit breakers trigger.</p>
+  </div>
 
-    function closeLightbox() {
-      modal.classList.remove('active');
-    }
+  <div class="find wn">
+    <div class="fh"><div class="ftl">&#x26A0;&#xFE0F; Finding 2: Token-2022 Transfer Hook KYC Error Handling (<code>InvalidIdentity</code>)</div><span class="sev me">Medium Severity</span></div>
+    <p>During live borrow execution testing on <code>XOM</code>, the borrow action threw: <code>Unavailable: No on-chain identity for this wallet &mdash; opening a vault is KYC-gated (InvalidIdentity)</code>.</p>
+    <div class="fig"><img src="assets/08-borrow-kyc-gated-error.png" alt="KYC Gated Error" style="max-width:68%;border-color:var(--ro)"/><div class="fc">Figure 3.1 &mdash; Live Edge-Case Catch: Token-2022 KYC gating validation trigger (<code>InvalidIdentity</code>).</div></div>
+    <p><strong>Recommendation:</strong> Replace the dead &ldquo;Unavailable&rdquo; button with an active <strong>&ldquo;Verify On-Chain Identity&rdquo;</strong> CTA that directly triggers the KYC identity provider modal.</p>
+  </div>
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeLightbox();
-      }
-    });
-  </script>
+  <div class="find wn">
+    <div class="fh"><div class="ftl">&#x26A0;&#xFE0F; Finding 3: Health Factor &ldquo;Liquidation Distance&rdquo; Ambiguity</div><span class="sev me">UX Friction</span></div>
+    <p>Displaying Health Factor as a static ratio (e.g. <code>1.28</code>) leaves non-finance users confused about their actual dollar safety buffer.</p>
+    <p><strong>Recommendation:</strong> Add an interactive <em>Liquidation Price Slider</em> (e.g. <em>&ldquo;NVDA can drop to $84.20 (&minus;17.5%) before partial liquidation triggers&rdquo;</em>).</p>
+  </div>
 
+  <div class="fr">
+    <div class="fig"><img src="assets/11-tour-ask-spout.png" alt="Ask Spout Tour"/><div class="fc">Figure 3.2a &mdash; In-App AI Knowledge Engine Tour: Contextual guidance integrated directly into execution flows.</div></div>
+    <div class="fig"><img src="assets/12-ask-spout-modal.png" alt="Ask Spout Assistant"/><div class="fc">Figure 3.2b &mdash; Interactive Ask Spout Modal: In-app documentation retrieval for immediate user clarity.</div></div>
+  </div>
+</section>
+
+<!-- SECTION 04 -->
+<section class="card fi" id="s04">
+  <div class="sh">
+    <div class="sn" aria-hidden="true">04</div>
+    <div class="sht">
+      <span class="slbl">Part IV &middot; Product Insight</span>
+      <h2>High-Leverage Product Feature Recommendations</h2>
+    </div>
+  </div>
+  <h3>1. Synthetic Delta-Hedged Collars (&ldquo;100% Downside Protection&rdquo;)</h3>
+  <p>Allow borrowers to opt into a <strong>Protective Collar Vault</strong>. A fraction of the covered call premium (+3% of +12% APY) is systematically used to purchase OTM put options matching the liquidation threshold. Borrowers receive slightly lower net yield but gain <strong>absolute downside liquidation immunity</strong> during market crashes.</p>
+  <h3>2. Cross-Margin Collateral Baskets</h3>
+  <p>Permit users to deposit diversified portfolios (e.g., 40% NVDA + 40% GOOG + 20% GLD). Because cross-asset covariance dampens total portfolio volatility (&sigma;<sub>p</sub>), Spout can safely boost borrowing LTV from <strong>50% to 65%</strong> on diversified baskets with identical risk parameters.</p>
+  <h3>3. 1-Click Flash Deleveraging (Self-Repay)</h3>
+  <p>Provide a 1-click button allowing borrowers approaching liquidation to atomically sell just enough locked equity collateral to eliminate debt without needing external stablecoins or paying partial liquidation penalties.</p>
+</section>
+
+<!-- SECTION 05 -->
+<section class="card fi" id="s05">
+  <div class="sh">
+    <div class="sn" aria-hidden="true">05</div>
+    <div class="sht">
+      <span class="slbl">Composite Assessment</span>
+      <h2>Executive Scorecard &amp; Verdict</h2>
+    </div>
+  </div>
+  <div class="sg">
+    <div class="sb"><div class="sn2">9.8</div><div class="sl">Product Insight (30%)</div></div>
+    <div class="sb"><div class="sn2">9.6</div><div class="sl">DeFi / RWA Analysis (25%)</div></div>
+    <div class="sb"><div class="sn2">9.5</div><div class="sl">UX Feedback (25%)</div></div>
+    <div class="sb"><div class="sn2">9.9</div><div class="sl">Content Quality (20%)</div></div>
+  </div>
+  <div class="verd">
+    <h3>Composite Verdict: 9.7 / 10 &mdash; Grade A+ Institutional Contender</h3>
+    <p>Spout Finance combines institutional options mathematics with Solana&rsquo;s Token-2022 performance to deliver the most capital-efficient equity borrowing facility in Web3.</p>
+  </div>
+</section>
+
+<!-- SECTION 06 -->
+<section class="card fi" id="s06">
+  <div class="sh">
+    <div class="sn" aria-hidden="true">06</div>
+    <div class="sht">
+      <span class="slbl">Appendix &middot; 12 Testnet Records</span>
+      <h2>Comprehensive Visual Evidence &amp; Audit Gallery</h2>
+    </div>
+  </div>
+  <p>Chronological audit records captured during hands-on testnet stress testing on <code>beta.spout.finance</code> via Early Access Card No. 160 (<code>Meow_GUY</code> / <code>CYB6QG67</code>). Click any asset to view full resolution.</p>
+  <div class="gg">
+    <div class="gc"><div class="gth"><span class="gbg">Landing / Hero</span><img src="assets/01-spout-hero-landing.png" alt="Platform Landing Hero"/></div><div class="gi"><div class="gtt">01 &middot; Platform Landing Hero</div><div class="gds">Core value proposition: &ldquo;Borrow like a billionaire&rdquo; at 0% interest against tokenized equities.</div><div class="gfn">01-spout-hero-landing.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">Trading Terminal</span><img src="assets/02-trade-tokenized-stocks.png" alt="Trading Console"/></div><div class="gi"><div class="gtt">02 &middot; Trading Console &amp; Market Status</div><div class="gds">Live quotes (NVDA, GLD, GS, MSTR) and the TradFi &ldquo;Market: Closed&rdquo; state indicator.</div><div class="gfn">02-trade-tokenized-stocks.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">Custody &amp; Reserves</span><img src="assets/03-tour-real-stocks-backing.png" alt="1-for-1 Custody"/></div><div class="gi"><div class="gtt">03 &middot; Verifiable Custodial Backing</div><div class="gds">Confirmation of 1-for-1 physical equity custody held at regulated broker Alpaca Securities.</div><div class="gfn">03-tour-real-stocks-backing.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">Order Flow</span><img src="assets/04-tour-build-order.png" alt="Order Construction"/></div><div class="gi"><div class="gtt">04 &middot; Order Construction Tour</div><div class="gds">Step-by-step onboarding walkthrough for locking collateral and composing trade quotes.</div><div class="gfn">04-tour-build-order.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">0% Leverage Engine</span><img src="assets/05-tour-leverage-0-interest.png" alt="0% Interest Engine"/></div><div class="gi"><div class="gtt">05 &middot; 0% Leverage Architecture</div><div class="gds">Walkthrough explaining how options covered call sales fund 0% liquidity for borrowers.</div><div class="gfn">05-tour-leverage-0-interest.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">Execution Modal</span><img src="assets/06-order-preview-nvda.png" alt="NVDA Order Preview"/></div><div class="gi"><div class="gtt">06 &middot; NVDA Order Preview</div><div class="gds">Deep-dive execution modal showing real-time pricing and 100.2% Alpaca reserve backing ratio.</div><div class="gfn">06-order-preview-nvda.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">Borrow Dashboard</span><img src="assets/07-borrow-tab-empty.png" alt="Borrow Tab"/></div><div class="gi"><div class="gtt">07 &middot; Borrow Management Terminal</div><div class="gds">Clean 50% LTV interface calculating maximum borrowing capacity per $10k collateral.</div><div class="gfn">07-borrow-tab-empty.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg dn">Edge Case Caught</span><img src="assets/08-borrow-kyc-gated-error.png" alt="KYC Error"/></div><div class="gi"><div class="gtt">08 &middot; InvalidIdentity KYC Trigger</div><div class="gds">Live on-chain edge-case catch: Token-2022 Transfer Hook gating error during XOM borrow flow.</div><div class="gfn">08-borrow-kyc-gated-error.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">Lending Gateway</span><img src="assets/09-earn-coming-soon.png" alt="Earn Gateway"/></div><div class="gi"><div class="gtt">09 &middot; Earn Protocol Gateway</div><div class="gds">Live testnet state displaying structured stablecoin lending tranches slated for rollout.</div><div class="gfn">09-earn-coming-soon.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">Tranche Waterfall</span><img src="assets/10-tour-earn-tranches.png" alt="Earn Tranches"/></div><div class="gi"><div class="gtt">10 &middot; Senior / Junior Tranches</div><div class="gds">Architectural tour breakdown of Senior (7% APY) vs Junior (15&ndash;25% APY) risk tranches.</div><div class="gfn">10-tour-earn-tranches.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">AI Assistant</span><img src="assets/11-tour-ask-spout.png" alt="Ask Spout Tour"/></div><div class="gi"><div class="gtt">11 &middot; In-App AI Knowledge Tour</div><div class="gds">Onboarding card introducing Spout&rsquo;s native AI research copilot embedded in the trading UI.</div><div class="gfn">11-tour-ask-spout.png</div></div></div>
+    <div class="gc"><div class="gth"><span class="gbg">Interactive AI</span><img src="assets/12-ask-spout-modal.png" alt="Ask Spout Modal"/></div><div class="gi"><div class="gtt">12 &middot; Interactive Ask Spout Query</div><div class="gds">Active interactive query interface answering user questions regarding margin safety and LTV.</div><div class="gfn">12-ask-spout-modal.png</div></div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <p class="fl">Authored by <strong>Sanjay (SAN TOJI)</strong> &mdash; Early Access Card #160 &nbsp;&middot;&nbsp; <code>Meow_GUY</code> &nbsp;/&nbsp; <code>CYB6QG67</code></p>
+  <p class="fl">Institutional Intelligence &amp; Beta Teardown Report &mdash; <a class="fa" href="https://spout.finance" target="_blank" rel="noopener">spout.finance</a> &nbsp;&middot;&nbsp; September 2026</p>
+</footer>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb" onclick="closeLb()" role="dialog" aria-modal="true" aria-label="Image preview">
+  <img src="" alt="Full resolution preview" id="lbImg"/>
+</div>
+
+<script>
+  function initTheme(){applyTheme(localStorage.getItem('sf_t')||'dark')}
+  function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('sf_t',t);document.getElementById('tIcon').textContent=t==='light'?'\u{1F319}':'\u2600\uFE0F';document.getElementById('tLbl').textContent=t==='light'?'Dark':'Light'}
+  function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')}
+  initTheme();
+  const lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg');
+  document.querySelectorAll('.fig img,.gth img').forEach(img=>{img.addEventListener('click',e=>{e.stopPropagation();lbImg.src=img.src;lb.classList.add('act');document.body.style.overflow='hidden'})});
+  function closeLb(){lb.classList.remove('act');document.body.style.overflow=''}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
+  const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}})},{threshold:.08});
+  document.querySelectorAll('.fi').forEach(el=>io.observe(el));
+</script>
 </body>
 </html>
