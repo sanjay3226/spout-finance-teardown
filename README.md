@@ -1,21 +1,18 @@
 # 🐋 Spout Finance — Institutional Intelligence & Beta Teardown Report
 
 > **Comprehensive Technical Architecture, Quantitative Economic Teardown & Product UX Audit**  
-> **Prepared for the Spout Finance Beta Intelligence Challenge on Superteam Earn**  
 > **Tester ID**: Early Access Card No. 160 (`Meow_GUY`) | **Beta Invite**: `CYB6QG67`  
 > **Date**: September 2026 | **Protocol Target**: [spout.finance](https://spout.finance) / [beta.spout.finance](https://beta.spout.finance)
 
 [![Solana Token-2022](https://img.shields.io/badge/Architecture-Solana%20Token--2022%20Transfer%20Hooks-9945FF?style=for-the-badge&logo=solana)](https://solana.com)
 [![Custody](https://img.shields.io/badge/Custody-FINRA%20%2F%20SIPC%20Regulated-0052FF?style=for-the-badge)](https://spout.finance)
 [![Yield Mechanism](https://img.shields.io/badge/Yield-Variance%20Risk%20Premium%20(VRP)-10B981?style=for-the-badge)](https://spout.finance/docs)
-[![Bounty Pool](https://img.shields.io/badge/Superteam%20Earn-1%2C000%20USDC%20Pool-F59E0B?style=for-the-badge)](https://earn.superteam.fun)
 [![Compiled PDF](https://img.shields.io/badge/Executive%20Report-Download%2017--Page%20PDF-E11D48?style=for-the-badge)](Spout-Finance-Beta-Teardown-Report.pdf)
 
 ### 📑 Navigation & Quick Links
 * 📄 **[Download Executive PDF Report (`Spout-Finance-Beta-Teardown-Report.pdf`)](Spout-Finance-Beta-Teardown-Report.pdf)** *(17-page compiled print-ready institutional report)*
-* 🌐 **[Interactive Luxury Research Portal (`report.html`)](report.html)** *(Standalone institutional view with live Dark/Light theme switching and lightbox)*
-* 🧵 **[Official 5-Part X (Twitter) Submission Thread (`SUBMISSION_THREAD.md`)](SUBMISSION_THREAD.md)** *(Viral public breakdown ready to copy-paste)*
-* 📋 **[Superteam Earn Form Cheat Sheet (`SUBMISSION_FORM_CHEAT_SHEET.md`)](SUBMISSION_FORM_CHEAT_SHEET.md)** *(Field-by-field copy/paste inputs for final submission)*
+* 🌐 **[Interactive Research Portal (`report.html`)](report.html)** *(Standalone institutional view with live Dark/Light theme switching and lightbox)*
+* 🧵 **[X (Twitter) Thread (`SUBMISSION_THREAD.md`)](SUBMISSION_THREAD.md)** *(Public breakdown thread — copy-paste ready)*
 * 🖼️ **[Master Visual Audit Gallery](#-appendix-master-visual-audit-gallery-1212-testnet-records)** *(Catalog of all 12 testnet stress-testing screenshots)*
 
 ---
@@ -335,4 +332,4 @@ All assets captured live during testnet stress testing on `beta.spout.finance` v
 
 ---
 
-*Report authored by **Sanjay (`SAN TOJI`)** | Early Access Card #160 (`Meow_GUY` / `CYB6QG67`) | Submitted to the Spout Finance Intelligence Challenge on Superteam Earn.*
+*Report authored by **Sanjay (`SAN TOJI`)** | Early Access Card #160 (`Meow_GUY` / `CYB6QG67`) | September 2026.*

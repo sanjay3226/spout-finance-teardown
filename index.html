@@ -88,92 +88,182 @@
       margin: 0 auto;
     }
 
-    /* Top Nav Bar */
+    /* ══════════════════════════════════════════
+       TOP NAVIGATION BAR — PREMIUM REDESIGN
+       ══════════════════════════════════════════ */
     .nav-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      padding: 12px 22px;
+      padding: 10px 18px;
       background: var(--card-bg);
-      backdrop-filter: blur(18px);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
+      border-radius: 18px;
       margin-bottom: 28px;
       position: sticky;
       top: 14px;
       z-index: 50;
-      box-shadow: 0 10px 30px var(--shadow-color);
+      box-shadow:
+        0 4px 6px -1px rgba(0,0,0,0.25),
+        0 10px 30px var(--shadow-color),
+        inset 0 1px 0 rgba(255,255,255,0.06);
       transition: all 0.3s ease;
     }
 
+    /* glowing accent line along the top edge */
+    .nav-bar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--solana), transparent);
+      border-radius: 999px;
+      opacity: 0.7;
+    }
+
+    /* ── Logo Group ── */
     .logo-group {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 1.08rem;
-      letter-spacing: -0.02em;
+      gap: 9px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), var(--solana));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      flex-shrink: 0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .logo-group:hover .logo-icon {
+      transform: scale(1.08) rotate(-4deg);
+      box-shadow: 0 6px 18px var(--accent-glow);
+    }
+
+    .logo-text {
+      font-weight: 800;
+      font-size: 0.98rem;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--text-main) 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
     }
 
     .logo-badge {
       background: linear-gradient(135deg, var(--accent), var(--solana));
       color: #fff;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 0.66rem;
       font-weight: 800;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
+      box-shadow: 0 2px 8px var(--accent-glow);
     }
 
+    /* ── Nav Links ── */
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 2px;
     }
 
     .nav-links a {
-      color: var(--text-muted);
+      position: relative;
+      color: var(--text-dim);
       text-decoration: none;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
+      letter-spacing: 0.005em;
+      transition: color 0.2s ease;
+      padding: 6px 11px;
+      border-radius: 9px;
       transition: color 0.2s ease, background 0.2s ease;
-      padding: 5px 8px;
-      border-radius: 6px;
     }
 
     .nav-links a:hover {
       color: var(--text-main);
-      background: rgba(125, 125, 125, 0.08);
+      background: rgba(99, 102, 241, 0.1);
     }
 
+    /* subtle animated underline on hover */
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      right: 50%;
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--accent), var(--solana));
+      border-radius: 2px;
+      transition: left 0.2s ease, right 0.2s ease;
+    }
+
+    .nav-links a:hover::after {
+      left: 11px;
+      right: 11px;
+    }
+
+    /* ── Nav Actions ── */
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      flex-shrink: 0;
     }
 
     .btn-action {
-      background: rgba(125, 125, 125, 0.06);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       gap: 6px;
+      padding: 7px 13px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
       white-space: nowrap;
+      border: 1px solid var(--card-border);
+      background: rgba(125, 125, 125, 0.06);
+      color: var(--text-muted);
     }
 
     .btn-action:hover {
-      background: rgba(125, 125, 125, 0.12);
-      border-color: var(--card-hover-border);
-      transform: translateY(-1px);
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--text-main);
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    /* Primary PDF button gets a gradient treatment */
+    .btn-action.btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--solana));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-action.btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--accent-glow);
+      color: #fff;
     }
 
     /* Hero Header */
@@ -1041,26 +1131,27 @@
 
     <!-- Nav Bar -->
     <header class="nav-bar">
-      <div class="logo-group">
-        <span>🐋 Spout Finance</span>
+      <a class="logo-group" href="#" aria-label="Spout Finance Teardown">
+        <div class="logo-icon">🐋</div>
+        <span class="logo-text">Spout Finance</span>
         <span class="logo-badge">Teardown</span>
-      </div>
-      <nav class="nav-links">
+      </a>
+      <nav class="nav-links" aria-label="Report sections">
         <a href="#sec-01">Architecture</a>
         <a href="#sec-02">0% Borrow</a>
         <a href="#sec-03">UX Audit</a>
         <a href="#sec-04">Roadmap</a>
         <a href="#sec-05">Scorecard</a>
-        <a href="#sec-06">Gallery (12)</a>
+        <a href="#sec-06">Gallery</a>
       </nav>
       <div class="nav-actions">
         <button class="btn-action" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle Theme">
           <span id="themeIcon">☀️</span>
           <span id="themeLabel">Light</span>
         </button>
-        <button class="btn-action" onclick="window.print()" aria-label="Print / Save PDF">
-          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-4 0h-8v4h8v-4z"></path></svg>
-          Print / PDF
+        <button class="btn-action btn-primary" onclick="window.print()" aria-label="Print / Save PDF">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-4 0h-8v4h8v-4z"></path></svg>
+          Save PDF
         </button>
       </div>
     </header>
@@ -1069,9 +1160,9 @@
     <div class="hero">
       <div class="pill-stack">
         <span class="pill verified">✓ Card #160 Verified Tester</span>
-        <span class="pill pool">🏆 Superteam 1,000 USDC Bounty</span>
         <span class="pill solana">⚡ Solana Token-2022</span>
         <span class="pill">🏦 FINRA / SIPC Regulated Custody</span>
+        <span class="pill">🔒 Token-2022 Transfer Hooks</span>
       </div>
       <h1>Institutional Intelligence & Beta Teardown Report</h1>
       <p class="hero-subtitle">
@@ -1664,7 +1755,7 @@
     <!-- Footer -->
     <footer style="text-align: center; margin-top: 40px; padding: 24px 0; color: var(--text-dim); font-size: 0.85rem; border-top: 1px solid var(--card-border);">
       <p style="margin-bottom: 6px;">Authored by <strong>Sanjay (SAN TOJI)</strong> | Early Access Card #160 (<code>Meow_GUY</code> / <code>CYB6QG67</code>)</p>
-      <p style="margin: 0;">Prepared for the Spout Finance Intelligence Challenge on <a href="https://earn.superteam.fun" target="_blank" style="color: var(--accent); text-decoration: none;">Superteam Earn</a></p>
+      <p style="margin: 0;">Institutional Intelligence &amp; Beta Teardown Report — <a href="https://spout.finance" target="_blank" style="color: var(--accent); text-decoration: none;">spout.finance</a> | September 2026</p>
     </footer>
 
   </div>

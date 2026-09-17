@@ -1,6 +1,6 @@
-# 📋 Superteam Earn Submission Form — Copy & Paste Cheat Sheet
+# 📋 Submission Form — Copy & Paste Reference
 
-Here is exactly what to paste into the 4 input fields shown on your screen:
+Here is exactly what to paste into the input fields on the form:
 
 ---
 
@@ -20,9 +20,9 @@ https://github.com/sanjay3226/spout-finance-teardown
 
 ---
 
-### Field 3: `Was there anything about this bounty that was confusing or unclear? Please explain` (Optional)
+### Field 3: Feedback / Clarity (Optional)
 ```text
-The bounty brief and evaluation criteria were exceptionally clear. The provided documentation on the Variance Risk Premium and covered call mechanics was thorough and made writing this institutional-grade analysis seamless.
+The brief and evaluation criteria were exceptionally clear. The provided documentation on the Variance Risk Premium and covered call mechanics was thorough and made writing this institutional-grade analysis seamless.
 ```
 
 ---
