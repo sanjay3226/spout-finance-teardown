@@ -9,9 +9,11 @@
 [![Custody](https://img.shields.io/badge/Custody-FINRA%20%2F%20SIPC%20Regulated-0052FF?style=for-the-badge)](https://spout.finance)
 [![Yield Mechanism](https://img.shields.io/badge/Yield-Variance%20Risk%20Premium%20(VRP)-10B981?style=for-the-badge)](https://spout.finance/docs)
 [![Bounty Pool](https://img.shields.io/badge/Superteam%20Earn-1%2C000%20USDC%20Pool-F59E0B?style=for-the-badge)](https://earn.superteam.fun)
+[![Compiled PDF](https://img.shields.io/badge/Executive%20Report-Download%2017--Page%20PDF-E11D48?style=for-the-badge)](Spout-Finance-Beta-Teardown-Report.pdf)
 
 ### 📑 Navigation & Quick Links
-* 🌐 **[Interactive Luxury Dark-Mode Research Portal (`report.html`)](report.html)** *(Standalone institutional view with interactive lightbox and print/PDF support)*
+* 📄 **[Download Executive PDF Report (`Spout-Finance-Beta-Teardown-Report.pdf`)](Spout-Finance-Beta-Teardown-Report.pdf)** *(17-page compiled print-ready institutional report)*
+* 🌐 **[Interactive Luxury Research Portal (`report.html`)](report.html)** *(Standalone institutional view with live Dark/Light theme switching and lightbox)*
 * 🧵 **[Official 5-Part X (Twitter) Submission Thread (`SUBMISSION_THREAD.md`)](SUBMISSION_THREAD.md)** *(Viral public breakdown ready to copy-paste)*
 * 📋 **[Superteam Earn Form Cheat Sheet (`SUBMISSION_FORM_CHEAT_SHEET.md`)](SUBMISSION_FORM_CHEAT_SHEET.md)** *(Field-by-field copy/paste inputs for final submission)*
 * 🖼️ **[Master Visual Audit Gallery](#-appendix-master-visual-audit-gallery-1212-testnet-records)** *(Catalog of all 12 testnet stress-testing screenshots)*

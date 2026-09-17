@@ -31,7 +31,7 @@ The bounty brief and evaluation criteria were exceptionally clear. The provided 
 ```text
 Tested with Verified Early Access Card No. 160 (Telegram handle @Meow_GUY / invite code CYB6QG67). 
 
-In addition to the comprehensive GitHub Markdown report, I have authored an interactive, standalone luxury dark-mode research portal ('report.html' inside the repository) designed for institutional review. 
+In addition to the comprehensive GitHub Markdown report, I have authored an interactive luxury research portal ('report.html' inside the repository with dynamic Dark/Light theme switching and visual flowcharts) and compiled a print-ready 17-page executive PDF report ('Spout-Finance-Beta-Teardown-Report.pdf'). 
 
 Looking forward to the mainnet rollout!
 ```
