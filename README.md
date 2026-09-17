@@ -364,8 +364,6 @@ spout-finance-teardown/
 ├── report.html                          # Master interactive HTML audit application
 ├── README.md                            # Comprehensive GitHub intelligence report (this file)
 ├── Spout-Finance-Beta-Teardown-Report.pdf # Compiled 17-page executive print-ready PDF
-├── SUBMISSION_THREAD.md                 # Public X (Twitter) multi-tweet intelligence breakdown
-├── SUBMISSION_FORM_CHEAT_SHEET.md       # Quick-reference submission answers & links
 └── assets/                              # 12 high-resolution audit screenshots & figures
     ├── 01-spout-hero-landing.png
     ├── 02-trade-tokenized-stocks.png
